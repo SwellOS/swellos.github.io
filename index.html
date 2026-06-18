@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SwellOS — A lightweight, performant Linux distribution</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --bg2: #161922;
+    --bg3: #1c2030;
+    --fg: #c8d0e0;
+    --fg2: #8892a8;
+    --accent: #5cd4af;
+    --accent2: #3db892;
+    --border: #252a3a;
+    --green: #5cd48f;
+    --cyan: #5cd4c8;
+    --yellow: #d4c45c;
+    --red: #d45c5c;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.6;
+  }
+  a { color: var(--accent); text-decoration: none; transition: color .2s; }
+  a:hover { color: var(--accent2); }
+
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 100;
+    background: rgba(15,17,23,.85); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  nav .logo { font-weight: 700; font-size: 1.15rem; color: var(--fg); letter-spacing: -.02em; }
+  nav .logo span { color: var(--accent); }
+  nav .links { display: flex; gap: 1.75rem; }
+  nav .links a { color: var(--fg2); font-size: .9rem; font-weight: 500; }
+  nav .links a:hover { color: var(--fg); }
+
+  .hero {
+    padding: 8rem 2rem 5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 800px; height: 800px;
+    background: radial-gradient(circle, rgba(92,212,175,.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero h1 {
+    font-size: 3.25rem; font-weight: 800; letter-spacing: -.03em;
+    margin-bottom: 1rem;
+    position: relative;
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero p {
+    font-size: 1.15rem; color: var(--fg2); max-width: 600px; margin: 0 auto 2rem;
+    position: relative;
+  }
+  .hero .badge {
+    display: inline-block;
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 100px; padding: .35rem 1rem;
+    font-size: .8rem; color: var(--fg2); margin-bottom: 1.5rem;
+    position: relative;
+  }
+  .hero .badge b { color: var(--accent); }
+  .hero .buttons { display: flex; gap: 1rem; justify-content: center; position: relative; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: .5rem;
+    padding: .75rem 1.75rem; border-radius: 8px;
+    font-weight: 600; font-size: .95rem; cursor: pointer;
+    transition: all .2s;
+  }
+  .btn-primary {
+    background: var(--accent); color: var(--bg); border: none;
+  }
+  .btn-primary:hover { background: var(--accent2); transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent; color: var(--fg); border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--fg2); transform: translateY(-1px); }
+
+  section { padding: 5rem 2rem; max-width: 1100px; margin: 0 auto; }
+  section h2 {
+    font-size: 2rem; font-weight: 700; letter-spacing: -.02em;
+    margin-bottom: .75rem;
+  }
+  section h2 span { color: var(--accent); }
+  section .subtitle { color: var(--fg2); font-size: 1.05rem; margin-bottom: 3rem; max-width: 640px; }
+
+  .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; }
+  .feature {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.75rem;
+    transition: border-color .2s, transform .2s;
+  }
+  .feature:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .feature .icon { font-size: 1.75rem; margin-bottom: .75rem; }
+  .feature h3 { font-size: 1rem; font-weight: 600; margin-bottom: .5rem; }
+  .feature p { font-size: .85rem; color: var(--fg2); line-height: 1.5; }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; }
+  .card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.75rem;
+  }
+  .card h3 { font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; color: var(--fg2); margin-bottom: .25rem; }
+  .card .value { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
+  .card .value.cyan { color: var(--cyan); }
+  .card .value.yellow { color: var(--yellow); }
+  .card .value.green { color: var(--green); }
+  .card p { font-size: .85rem; color: var(--fg2); margin-top: .25rem; }
+
+  .pkg-table {
+    width: 100%; border-collapse: separate; border-spacing: 0 .5rem;
+  }
+  .pkg-table th {
+    text-align: left; font-size: .75rem; text-transform: uppercase;
+    letter-spacing: .06em; color: var(--fg2); padding: .5rem .75rem;
+  }
+  .pkg-table td {
+    background: var(--bg2); border: 1px solid var(--border);
+    padding: .75rem 1rem; font-size: .9rem;
+  }
+  .pkg-table td:first-child { border-radius: 8px 0 0 8px; font-weight: 600; }
+  .pkg-table td:last-child { border-radius: 0 8px 8px 0; }
+  .pkg-table td small { font-weight: 400; color: var(--fg2); font-size: .8rem; }
+  .tag {
+    display: inline-block;
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 4px; padding: .15rem .5rem;
+    font-size: .7rem; font-weight: 600;
+  }
+  .tag.core { color: var(--accent); }
+  .tag.kernel { color: var(--cyan); }
+  .tag.lib { color: var(--yellow); }
+
+  .code-block {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1.5rem;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+    font-size: .82rem; line-height: 1.7;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+  }
+  .code-block .comment { color: #4a5570; }
+  .code-block .cmd { color: var(--fg); }
+  .code-block .prompt { color: var(--accent); }
+
+  .roadmap-item {
+    display: flex; gap: 1rem; padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .roadmap-item:last-child { border-bottom: none; }
+  .roadmap-item .status {
+    flex-shrink: 0; width: 24px; height: 24px;
+    border-radius: 50%; margin-top: .2rem;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .75rem;
+  }
+  .roadmap-item .status.done { background: var(--accent); color: var(--bg); }
+  .roadmap-item .status.pending { background: var(--bg3); color: var(--fg2); border: 1px solid var(--border); }
+  .roadmap-item .info h4 { font-size: .95rem; font-weight: 600; }
+  .roadmap-item .info p { font-size: .85rem; color: var(--fg2); }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+  @media (max-width: 768px) {
+    .grid-2 { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 2.25rem; }
+    nav .links { display: none; }
+    section { padding: 3rem 1.25rem; }
+    .pkg-table { font-size: .8rem; }
+  }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem;
+    text-align: center;
+    color: var(--fg2);
+    font-size: .85rem;
+  }
+  footer a { color: var(--fg2); }
+  footer a:hover { color: var(--fg); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">&lt;<span>Swell</span>OS /&gt;</div>
+  <div class="links">
+    <a href="#about">About</a>
+    <a href="#features">Features</a>
+    <a href="#packages">Packages</a>
+    <a href="#progress">Progress</a>
+    <a href="#repos">Repos</a>
+    <a href="#build">Build</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="badge">v0.1 · <b>pre-alpha</b> · 61 MB ISO</div>
+  <h1>A Linux distribution,<br>built <span>from scratch</span></h1>
+  <p>SwellOS is a lightweight, performance-tuned Linux distribution built from LFS/BLFS with a custom monolithic kernel, runit init, and the sbpm package manager.</p>
+  <div class="buttons">
+    <a href="#packages" class="btn btn-primary">Browse packages</a>
+    <a href="#repos" class="btn btn-secondary">Source code</a>
+  </div>
+</div>
+
+<section id="about">
+  <h2>What is <span>SwellOS</span>?</h2>
+  <p class="subtitle">An independent Linux distribution built from the ground up — not a fork or derivative of any existing distro.</p>
+  <div class="grid-2">
+    <div>
+      <p style="color:var(--fg2);margin-bottom:1rem">SwellOS follows the Linux From Scratch philosophy: every component is compiled from source, optimized for performance, and hand-picked. The result is a lean, fast system with no bloat.</p>
+      <p style="color:var(--fg2);margin-bottom:1rem">Currently in <strong style="color:var(--fg)">pre-alpha</strong>, the system boots to a fully functional shell via runit service supervision. The 61 MB ISO includes the kernel, initramfs, busybox, and runit — everything needed to boot and run.</p>
+      <p style="color:var(--fg2)">The distribution is designed for users who want a modern, performant Linux experience with full control over what goes into their system.</p>
+    </div>
+    <div>
+      <div class="cards">
+        <div class="card"><h3>ISO Size</h3><div class="value">61 MB</div><p>Bootable live ISO</p></div>
+        <div class="card"><h3>Kernel</h3><div class="value cyan">6.14</div><p>Custom monolithic, preempt tuned</p></div>
+        <div class="card"><h3>Init</h3><div class="value green">runit</div><p>Service supervision</p></div>
+        <div class="card"><h3>Rootfs</h3><div class="value">29 MB</div><p>Minimal in-memory filesystem</p></div>
+        <div class="card"><h3>Packages</h3><div class="value yellow">3</div><p>In repo.db index</p></div>
+        <div class="card"><h3>Status</h3><div class="value">pre-alpha</div><p>Bootable shell</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features" style="background:var(--bg2);border-radius:24px;margin:0 2rem;max-width:1100px">
+  <h2>Key <span>features</span></h2>
+  <p class="subtitle">What makes SwellOS different from other distributions.</p>
+  <div class="features">
+    <div class="feature">
+      <div class="icon">⚡</div>
+      <h3>Performance tuned</h3>
+      <p>Preemptible kernel (<code>CONFIG_PREEMPT</code>), tickless idle (<code>NO_HZ_FULL</code>), schedutil governor, ZSTD kernel compression — optimized for desktop responsiveness.</p>
+    </div>
+    <div class="feature">
+      <div class="icon">🧱</div>
+      <h3>Monolithic kernel</h3>
+      <p>No module support (<code>CONFIG_MODULES=n</code>). All drivers compiled in. NVMe, SATA, virtio, e1000, USB, ext4, btrfs, vfat — all built-in.</p>
+    </div>
+    <div class="feature">
+      <div class="icon">📦</div>
+      <h3>sbpm package manager</h3>
+      <p>Custom Rust-based package manager. Packages are `.swell` archives (tar.zst + metadata.toml). Simple JSON repo index.</p>
+    </div>
+    <div class="feature">
+      <div class="icon">🔄</div>
+      <h3>runit init</h3>
+      <p>Fast service supervision: one-time startup (stage 1), supervised services via runsvdir (stage 2), clean shutdown (stage 3).</p>
+    </div>
+    <div class="feature">
+      <div class="icon">🏗️</div>
+      <h3>From scratch</h3>
+      <p>Not based on Arch, Debian, or any existing distro. Every package cross-compiled from source for SwellOS using the host toolchain.</p>
+    </div>
+    <div class="feature">
+      <div class="icon">🌐</div>
+      <h3>GitHub Pages repos</h3>
+      <p>All source code open on GitHub under <a href="https://github.com/SwellOS">SwellOS</a>. Package repository hosted at <code style="font-size:.8rem;color:var(--accent)">swellos.github.io/packages</code>.</p>
+    </div>
+  </div>
+</section>
+
+<section id="packages">
+  <h2>Available <span>packages</span></h2>
+  <p class="subtitle">Currently built and published .swell packages for SwellOS.</p>
+
+  <table class="pkg-table">
+    <thead>
+      <tr><th>Package</th><th>Version</th><th>Size</th><th>Type</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>busybox <small>1.36.1</small></td>
+        <td>1.36.1-1</td>
+        <td>1.5 MB</td>
+        <td><span class="tag core">core</span></td>
+        <td style="color:var(--accent)">Built</td>
+      </tr>
+      <tr>
+        <td>runit <small>2.2.0</small></td>
+        <td>2.2.0-1</td>
+        <td>1.5 MB</td>
+        <td><span class="tag core">core</span></td>
+        <td style="color:var(--accent)">Built</td>
+      </tr>
+      <tr>
+        <td>zlib <small>1.3.1</small></td>
+        <td>1.3.1-1</td>
+        <td>116 KB</td>
+        <td><span class="tag lib">lib</span></td>
+        <td style="color:var(--accent)">Built</td>
+      </tr>
+      <tr>
+        <td>linux <small>6.14</small></td>
+        <td>6.14.0-swell</td>
+        <td>13 MB</td>
+        <td><span class="tag kernel">kernel</span></td>
+        <td style="color:var(--yellow)">Raw (no .swell)</td>
+      </tr>
+      <tr>
+        <td>linux-api-headers <small>6.14</small></td>
+        <td>6.14-1</td>
+        <td>—</td>
+        <td><span class="tag lib">lib</span></td>
+        <td style="color:var(--fg2)">Needs build</td>
+      </tr>
+      <tr>
+        <td>openssl <small>3.x</small></td>
+        <td>—</td>
+        <td>—</td>
+        <td><span class="tag lib">lib</span></td>
+        <td style="color:var(--fg2)">Pending</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p style="color:var(--fg2);font-size:.85rem;margin-top:1rem">Package repository URL: <code style="color:var(--accent);font-family:monospace">https://swellos.github.io/packages/repo.db</code></p>
+</section>
+
+<section id="progress">
+  <h2>Build <span>progress</span></h2>
+  <p class="subtitle">Current state of the SwellOS build pipeline. 6 of 9 milestones complete.</p>
+
+  <div class="roadmap-item">
+    <div class="status done">✓</div>
+    <div class="info">
+      <h4>sbpm package manager</h4>
+      <p>Built from Rust source with patched REPO_URL pointing to swellos.github.io/packages. 4.6 MB ELF binary, depends on libssl + libcrypto.</p>
+    </div>
+  </div>
+  <div class="roadmap-item">
+    <div class="status done">✓</div>
+    <div class="info">
+      <h4>zlib 1.3.1</h4>
+      <p>First package built. Shared library (libz.so.1.3.1), static library (libz.a), headers, and pkg-config file. Packaged as .swell.</p>
+    </div>
+  </div>
+  <div class="roadmap-item">
+    <div class="status done">✓</div>
+    <div class="info">
+      <h4>busybox 1.36.1</h4>
+      <p>Static multi-call binary (2.5 MB). Defconfig + ash shell enabled. TC removed for GCC compat. 300+ applet symlinks. Packaged as .swell.</p>
+    </div>
+  </div>
+  <div class="roadmap-item">
+    <div class="status done">✓</div>
+    <div class="info">
+      <h4>runit 2.2.0</h4>
+      <p>All 13 binaries built and statically linked (init, runsvdir, runsv, sv, chpst, svlogd, etc.). K&amp;R C code modernized. Packaged as .swell.</p>
+    </div>
+  </div>
+  <div class="roadmap-item">
+    <div class="status done">✓</div>
+    <div class="info">
+      <h4>Linux 6.14 kernel</h4>
+      <p>Custom monolithic config: CONFIG_PREEMPT, CONFIG_NO_HZ_FULL, CONFIG_SCHED_MC, CONFIG_KERNEL_ZSTD. All common drivers built-in. 13 MB bzImage.</p>
+    </div>
+  </div>
+  <div class="roadmap-item">
+    <div class="status done">✓</div>
+    <div class="info">
+      <h4>Bootable ISO</h4>
+      <p>61 MB ISO with GRUB (BIOS hybrid). Initramfs with busybox + runit, auto-login root shell on ttyS0. Tested and verified booting in QEMU.</p>
+    </div>
+  </div>
+  <div class="roadmap-item">
+    <div class="status pending">◷</div>
+    <div class="info">
+      <h4>Package repository on GitHub Pages</h4>
+      <p>Upload built .swell packages to swellos.github.io/packages with repo.db JSON index. Make packages installable via sbpm.</p>
+    </div>
+  </div>
+  <div class="roadmap-item">
+    <div class="status pending">◷</div>
+    <div class="info">
+      <h4>swell-installer integration</h4>
+      <p>Bundle the Rust-based installer into the live ISO. Enable persistent installation to disk from the live environment.</p>
+    </div>
+  </div>
+  <div class="roadmap-item">
+    <div class="status pending">◷</div>
+    <div class="info">
+      <h4>Additional base packages</h4>
+      <p>Build openssl, wget/curl, dhcpcd, file, make, gcc, and other base packages to complete a usable developer environment.</p>
+    </div>
+  </div>
+</section>
+
+<section id="repos">
+  <h2>Source <span>repositories</span></h2>
+  <p class="subtitle">All SwellOS code is open source on GitHub.</p>
+
+  <table class="pkg-table">
+    <thead>
+      <tr><th>Repository</th><th>Description</th><th>Language</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a href="https://github.com/SwellOS/sbpm">sbpm</a></td>
+        <td>Package manager — download, install, remove .swell packages</td>
+        <td>Rust</td>
+      </tr>
+      <tr>
+        <td><a href="https://github.com/SwellOS/kernel">kernel</a></td>
+        <td>Custom Linux kernel fork with SwellOS config</td>
+        <td>C</td>
+      </tr>
+      <tr>
+        <td><a href="https://github.com/SwellOS/packages">packages</a></td>
+        <td>Package build scripts and published .swell archives</td>
+        <td>Shell + JSON</td>
+      </tr>
+      <tr>
+        <td><a href="https://github.com/SwellOS/swell-build">swell-build</a></td>
+        <td>Build system for compiling and packaging software</td>
+        <td>Rust</td>
+      </tr>
+      <tr>
+        <td><a href="https://github.com/SwellOS/swell-installer">swell-installer</a></td>
+        <td>Graphical/TUI installer for persistent installation</td>
+        <td>Rust</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top:2rem;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.5rem">
+    <h3 style="font-size:1rem;margin-bottom:.75rem;color:var(--accent)">Directory structure</h3>
+    <div class="code-block" style="margin:0">
+<span class="comment"># Build workspace layout</span><br>
+<span class="prompt">swellos/</span><br>
+├── build-scripts/        <span class="comment"># build.conf, build-pkg.sh</span><br>
+├── build/<br>
+│   ├── rootfs/           <span class="comment"># Target root filesystem (29 MB)</span><br />
+│   ├── pkgs/             <span class="comment"># .swell package archives</span><br>
+│   ├── repo/             <span class="comment"># repo.db JSON index</span><br>
+│   ├── sources/          <span class="comment"># Downloaded source tarballs</span><br>
+│   ├── rootfs.cpio.zst   <span class="comment"># Compressed initramfs</span><br>
+│   ├── swellos.iso       <span class="comment"># Bootable ISO (61 MB)</span><br>
+│   ├── build-busybox/<br>
+│   ├── build-runit/<br>
+│   └── build-zlib/<br>
+├── kernel/               <span class="comment"># Kernel repo clone</span><br>
+├── packages/             <span class="comment"># Packages repo clone</span><br>
+├── sbpm/                 <span class="comment"># sbpm repo clone</span><br>
+├── swell-build/          <span class="comment"># swell-build repo clone</span><br>
+└── swell-installer/      <span class="comment"># swell-installer repo clone</span><br>
+    </div>
+  </div>
+</section>
+
+<section id="build">
+  <h2>Build your <span>own</span></h2>
+  <p class="subtitle">SwellOS is built entirely from source. Here's how the build pipeline works.</p>
+
+  <div class="code-block">
+    <span class="comment"># 1. Build sbpm (package manager)</span><br>
+    <span class="prompt">$</span> cd sbpm && cargo build --release<br>
+    <br>
+    <span class="comment"># 2. Set up build configuration</span><br>
+    <span class="prompt">$</span> cat build-scripts/build.conf<br>
+    <span class="comment">REPO_DIR=/tmp/swellos/build/repo</span><br>
+    <span class="comment">ROOTFS_DIR=/tmp/swellos/build/rootfs</span><br>
+    <span class="comment">REPO_URL_BASE="https://swellos.github.io/packages"</span><br>
+    <br>
+    <span class="comment"># 3. Build a package from source</span><br>
+    <span class="prompt">$</span> ./build-pkg.sh zlib 1.3.1 \<br>
+    &nbsp;&nbsp;https://zlib.net/zlib-1.3.1.tar.gz \<br>
+    &nbsp;&nbsp;9a93...<span class="comment"># sha256</span><br>
+    <br>
+    <span class="comment"># 4. Create bootable ISO</span><br>
+    <span class="prompt">$</span> grub-mkrescue -o swellos.iso rootfs/<br>
+    <br>
+    <span class="comment"># 5. Test in QEMU</span><br>
+    <span class="prompt">$</span> qemu-system-x86_64 -m 512M \<br>
+    &nbsp;&nbsp;-cdrom swellos.iso -cpu max -serial stdio
+  </div>
+
+  <div style="margin-top:2rem;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:1.25rem">
+    <p style="color:var(--fg2);font-size:.9rem">The kernel requires <code style="color:var(--accent)">-cpu max</code> in QEMU because busybox is compiled with AVX instructions unsupported by QEMU's default CPU model. On real hardware this is not an issue.</p>
+  </div>
+</section>
+
+<footer>
+  <p>SwellOS · Built from scratch · <a href="https://github.com/SwellOS">GitHub organization</a> · <a href="https://swellos.github.io/packages/repo.db">Package repository</a></p>
+</footer>
+
+</body>
+</html>
