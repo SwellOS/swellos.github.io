@@ -5,142 +5,325 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SwellOS — A lightweight, performant Linux distribution</title>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+
   :root {
-    --bg: #0f1117;
-    --bg2: #161922;
-    --bg3: #1c2030;
-    --fg: #c8d0e0;
-    --fg2: #8892a8;
+    --bg: #000000;
+    --bg2: #0a0a0a;
+    --bg3: #111111;
+    --bg4: #1a1a1a;
+    --fg: #e8e8e8;
+    --fg2: #888888;
+    --fg3: #555555;
     --accent: #5cd4af;
-    --accent2: #3db892;
-    --border: #252a3a;
+    --accent2: #4bc89e;
+    --accent-dim: rgba(92, 212, 175, .1);
+    --accent-glow: rgba(92, 212, 175, .08);
+    --border: #1e1e1e;
+    --border2: #2a2a2a;
     --green: #5cd48f;
     --cyan: #5cd4c8;
     --yellow: #d4c45c;
     --red: #d45c5c;
+    --radius: 12px;
+    --radius-lg: 20px;
   }
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { scroll-behavior: smooth; }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
     background: var(--bg);
     color: var(--fg);
-    line-height: 1.6;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
   }
-  a { color: var(--accent); text-decoration: none; transition: color .2s; }
+  a { color: var(--accent); text-decoration: none; }
   a:hover { color: var(--accent2); }
+
+  ::selection { background: var(--accent); color: var(--bg); }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--fg3); }
 
   nav {
     position: fixed; top: 0; width: 100%; z-index: 100;
-    background: rgba(15,17,23,.85); backdrop-filter: blur(12px);
+    background: rgba(0,0,0,.8); backdrop-filter: blur(20px) saturate(1.5);
+    -webkit-backdrop-filter: blur(20px) saturate(1.5);
     border-bottom: 1px solid var(--border);
     padding: 0 2rem;
-    height: 56px;
-    display: flex; align-items: center; justify-content: space-between;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: border-color .3s;
   }
-  nav .logo { font-weight: 700; font-size: 1.15rem; color: var(--fg); letter-spacing: -.02em; }
+  nav.scrolled { border-color: var(--border2); }
+  nav .logo {
+    font-weight: 800; font-size: 1.2rem; color: var(--fg);
+    letter-spacing: -.03em; display: flex; align-items: center; gap: .5rem;
+  }
+  nav .logo svg { width: 28px; height: 28px; }
   nav .logo span { color: var(--accent); }
-  nav .links { display: flex; gap: 1.75rem; }
-  nav .links a { color: var(--fg2); font-size: .9rem; font-weight: 500; }
+  nav .links { display: flex; gap: 2rem; }
+  nav .links a {
+    color: var(--fg2); font-size: .85rem; font-weight: 500;
+    position: relative; padding: .25rem 0; transition: color .2s;
+  }
+  nav .links a::after {
+    content: ''; position: absolute; bottom: -2px; left: 0; width: 0;
+    height: 2px; background: var(--accent); transition: width .3s;
+    border-radius: 1px;
+  }
   nav .links a:hover { color: var(--fg); }
+  nav .links a:hover::after { width: 100%; }
 
   .hero {
-    padding: 8rem 2rem 5rem;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
     text-align: center;
+    padding: 6rem 2rem 4rem;
     position: relative;
     overflow: hidden;
   }
   .hero::before {
     content: '';
-    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-    width: 800px; height: 800px;
-    background: radial-gradient(circle, rgba(92,212,175,.06) 0%, transparent 70%);
+    position: absolute;
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 900px; height: 900px;
+    background:
+      radial-gradient(circle at 30% 50%, rgba(92,212,175,.05) 0%, transparent 50%),
+      radial-gradient(circle at 70% 50%, rgba(92,212,200,.03) 0%, transparent 50%);
     pointer-events: none;
   }
-  .hero h1 {
-    font-size: 3.25rem; font-weight: 800; letter-spacing: -.03em;
-    margin-bottom: 1rem;
-    position: relative;
-  }
-  .hero h1 span { color: var(--accent); }
-  .hero p {
-    font-size: 1.15rem; color: var(--fg2); max-width: 600px; margin: 0 auto 2rem;
-    position: relative;
+  .hero .grid-bg {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse at center, black 20%, transparent 60%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 20%, transparent 60%);
+    pointer-events: none;
   }
   .hero .badge {
-    display: inline-block;
+    display: inline-flex; align-items: center; gap: .5rem;
     background: var(--bg3); border: 1px solid var(--border);
-    border-radius: 100px; padding: .35rem 1rem;
-    font-size: .8rem; color: var(--fg2); margin-bottom: 1.5rem;
+    border-radius: 100px; padding: .4rem 1.1rem;
+    font-size: .8rem; color: var(--fg2); margin-bottom: 2rem;
     position: relative;
+    animation: fadeUp .8s ease-out;
   }
-  .hero .badge b { color: var(--accent); }
-  .hero .buttons { display: flex; gap: 1rem; justify-content: center; position: relative; flex-wrap: wrap; }
+  .hero .badge .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent); animation: pulse 2s ease-in-out infinite;
+  }
+  .hero .badge b { color: var(--accent); font-weight: 600; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 900; letter-spacing: -.04em;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    position: relative;
+    animation: fadeUp .8s ease-out .1s both;
+  }
+  .hero h1 span {
+    background: linear-gradient(135deg, var(--accent), var(--cyan));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p {
+    font-size: 1.15rem; color: var(--fg2);
+    max-width: 580px; margin: 0 auto 2.5rem;
+    position: relative;
+    animation: fadeUp .8s ease-out .2s both;
+  }
+  .hero .buttons {
+    display: flex; gap: 1rem; justify-content: center;
+    position: relative; flex-wrap: wrap;
+    animation: fadeUp .8s ease-out .3s both;
+  }
   .btn {
     display: inline-flex; align-items: center; gap: .5rem;
-    padding: .75rem 1.75rem; border-radius: 8px;
-    font-weight: 600; font-size: .95rem; cursor: pointer;
-    transition: all .2s;
+    padding: .85rem 2rem; border-radius: 10px;
+    font-weight: 600; font-size: .9rem; cursor: pointer;
+    transition: all .25s; border: none;
   }
   .btn-primary {
-    background: var(--accent); color: var(--bg); border: none;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: var(--bg); box-shadow: 0 4px 20px rgba(92,212,175,.25);
   }
-  .btn-primary:hover { background: var(--accent2); transform: translateY(-1px); }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(92,212,175,.35);
+  }
   .btn-secondary {
-    background: transparent; color: var(--fg); border: 1px solid var(--border);
+    background: var(--bg4); color: var(--fg);
+    border: 1px solid var(--border2);
   }
-  .btn-secondary:hover { border-color: var(--fg2); transform: translateY(-1px); }
+  .btn-secondary:hover {
+    border-color: var(--fg3); transform: translateY(-2px);
+    background: var(--bg3);
+  }
 
-  section { padding: 5rem 2rem; max-width: 1100px; margin: 0 auto; }
+  .scroll-indicator {
+    position: absolute; bottom: 2rem;
+    display: flex; flex-direction: column; align-items: center; gap: .5rem;
+    color: var(--fg3); font-size: .7rem; letter-spacing: .1em;
+    text-transform: uppercase;
+    animation: fadeUp .8s ease-out .5s both;
+  }
+  .scroll-indicator .mouse {
+    width: 20px; height: 30px; border: 2px solid var(--border2);
+    border-radius: 10px; position: relative;
+  }
+  .scroll-indicator .mouse::after {
+    content: ''; position: absolute; top: 5px; left: 50%;
+    transform: translateX(-50%);
+    width: 3px; height: 8px; background: var(--fg3); border-radius: 2px;
+    animation: scrollWheel 2s ease-in-out infinite;
+  }
+  @keyframes scrollWheel {
+    0% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(12px); }
+  }
+
+  section { padding: 6rem 2rem; max-width: 1100px; margin: 0 auto; position: relative; }
+  section.alt { max-width: none; padding: 6rem 0; }
+  section.alt > div { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
   section h2 {
-    font-size: 2rem; font-weight: 700; letter-spacing: -.02em;
-    margin-bottom: .75rem;
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    font-weight: 800; letter-spacing: -.03em;
+    margin-bottom: .75rem; line-height: 1.2;
   }
-  section h2 span { color: var(--accent); }
-  section .subtitle { color: var(--fg2); font-size: 1.05rem; margin-bottom: 3rem; max-width: 640px; }
+  section h2 span {
+    background: linear-gradient(135deg, var(--accent), var(--cyan));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  section .subtitle {
+    color: var(--fg2); font-size: 1.05rem;
+    margin-bottom: 3.5rem; max-width: 600px;
+  }
 
-  .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; }
-  .feature {
-    background: var(--bg2); border: 1px solid var(--border);
-    border-radius: 12px; padding: 1.75rem;
-    transition: border-color .2s, transform .2s;
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+  @media (max-width: 768px) { .about-grid { grid-template-columns: 1fr; } }
+  .about-text p { color: var(--fg2); margin-bottom: 1rem; font-size: .95rem; }
+  .about-text p strong { color: var(--fg); }
+  .about-text code {
+    background: var(--bg3); padding: .15rem .5rem; border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace; font-size: .85rem; color: var(--accent);
   }
-  .feature:hover { border-color: var(--accent); transform: translateY(-2px); }
-  .feature .icon { font-size: 1.75rem; margin-bottom: .75rem; }
-  .feature h3 { font-size: 1rem; font-weight: 600; margin-bottom: .5rem; }
-  .feature p { font-size: .85rem; color: var(--fg2); line-height: 1.5; }
 
-  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; }
-  .card {
-    background: var(--bg2); border: 1px solid var(--border);
-    border-radius: 12px; padding: 1.75rem;
+  .stats-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;
   }
-  .card h3 { font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; color: var(--fg2); margin-bottom: .25rem; }
-  .card .value { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
-  .card .value.cyan { color: var(--cyan); }
-  .card .value.yellow { color: var(--yellow); }
-  .card .value.green { color: var(--green); }
-  .card p { font-size: .85rem; color: var(--fg2); margin-top: .25rem; }
+  @media (max-width: 600px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+  .stat-card {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.5rem; text-align: center;
+    transition: border-color .3s, transform .3s;
+    position: relative; overflow: hidden;
+  }
+  .stat-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent-dim), transparent);
+    opacity: 0; transition: opacity .3s;
+  }
+  .stat-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+  .stat-card:hover::before { opacity: 1; }
+  .stat-card h3 {
+    font-size: .7rem; text-transform: uppercase; letter-spacing: .08em;
+    color: var(--fg3); margin-bottom: .5rem; font-weight: 600;
+  }
+  .stat-card .value {
+    font-size: 1.8rem; font-weight: 800; color: var(--fg);
+    margin-bottom: .25rem;
+  }
+  .stat-card .value.accent { color: var(--accent); }
+  .stat-card .value.cyan { color: var(--cyan); }
+  .stat-card .value.yellow { color: var(--yellow); }
+  .stat-card .value.green { color: var(--green); }
+  .stat-card p { font-size: .8rem; color: var(--fg3); }
 
-  .pkg-table {
-    width: 100%; border-collapse: separate; border-spacing: 0 .5rem;
+  .features-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem;
   }
-  .pkg-table th {
-    text-align: left; font-size: .75rem; text-transform: uppercase;
-    letter-spacing: .06em; color: var(--fg2); padding: .5rem .75rem;
+  .feature-card {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 2rem;
+    transition: all .3s; position: relative; overflow: hidden;
   }
-  .pkg-table td {
-    background: var(--bg2); border: 1px solid var(--border);
-    padding: .75rem 1rem; font-size: .9rem;
+  .feature-card::after {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent-dim), transparent);
+    opacity: 0; transition: opacity .3s;
   }
-  .pkg-table td:first-child { border-radius: 8px 0 0 8px; font-weight: 600; }
-  .pkg-table td:last-child { border-radius: 0 8px 8px 0; }
-  .pkg-table td small { font-weight: 400; color: var(--fg2); font-size: .8rem; }
+  .feature-card:hover {
+    border-color: var(--border2); transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(0,0,0,.3);
+  }
+  .feature-card:hover::after { opacity: 1; }
+  .feature-card .icon { font-size: 1.8rem; margin-bottom: 1rem; }
+  .feature-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: .5rem; }
+  .feature-card p { font-size: .85rem; color: var(--fg2); line-height: 1.6; }
+  .feature-card code {
+    background: var(--bg4); padding: .1rem .4rem; border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace; font-size: .8rem; color: var(--accent);
+  }
+
+  .section-divider {
+    height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 0 2rem;
+  }
+
+  .pkg-section { margin-bottom: 2.5rem; }
+  .pkg-section h3 {
+    font-size: 1rem; font-weight: 700; margin-bottom: 1rem;
+    display: flex; align-items: center; gap: .75rem;
+  }
+  .pkg-section h3 .count {
+    font-weight: 500; color: var(--fg3); font-size: .85rem;
+    background: var(--bg3); padding: .1rem .6rem; border-radius: 100px;
+    border: 1px solid var(--border);
+  }
+
+  table {
+    width: 100%; border-collapse: separate; border-spacing: 0 .4rem;
+  }
+  table th {
+    text-align: left; font-size: .7rem; text-transform: uppercase;
+    letter-spacing: .08em; color: var(--fg3); font-weight: 600;
+    padding: .4rem .75rem;
+  }
+  table td {
+    background: var(--bg3); border: 1px solid var(--border);
+    padding: .7rem .85rem; font-size: .88rem; transition: border-color .2s;
+  }
+  table tr:hover td { border-color: var(--border2); }
+  table td:first-child {
+    border-radius: 8px 0 0 8px;
+    font-weight: 600; border-right: none;
+  }
+  table td:last-child { border-radius: 0 8px 8px 0; border-left: none; }
+  table td:first-child + td { border-left: none; border-right: none; }
+  table td small { font-weight: 400; color: var(--fg2); font-size: .8rem; }
+
   .tag {
     display: inline-block;
-    background: var(--bg3); border: 1px solid var(--border);
-    border-radius: 4px; padding: .15rem .5rem;
-    font-size: .7rem; font-weight: 600;
+    background: var(--bg4); border: 1px solid var(--border);
+    border-radius: 4px; padding: .1rem .5rem;
+    font-size: .68rem; font-weight: 600; letter-spacing: .02em;
   }
   .tag.core { color: var(--accent); }
   .tag.kernel { color: var(--cyan); }
@@ -153,131 +336,226 @@
   .tag.office { color: #a78bfa; }
   .tag.network { color: #34d399; }
 
-  .code-block {
-    background: var(--bg3); border: 1px solid var(--border);
-    border-radius: 10px; padding: 1.5rem;
-    font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
-    font-size: .82rem; line-height: 1.7;
-    overflow-x: auto;
-    margin: 1.5rem 0;
-  }
-  .code-block .comment { color: #4a5570; }
-  .code-block .cmd { color: var(--fg); }
-  .code-block .prompt { color: var(--accent); }
-
   .roadmap-item {
-    display: flex; gap: 1rem; padding: 1rem 0;
+    display: flex; gap: 1.25rem; padding: 1.25rem 0;
     border-bottom: 1px solid var(--border);
+    transition: border-color .2s;
   }
   .roadmap-item:last-child { border-bottom: none; }
   .roadmap-item .status {
-    flex-shrink: 0; width: 24px; height: 24px;
-    border-radius: 50%; margin-top: .2rem;
+    flex-shrink: 0; width: 28px; height: 28px;
+    border-radius: 50%; margin-top: .1rem;
     display: flex; align-items: center; justify-content: center;
-    font-size: .75rem;
+    font-size: .75rem; font-weight: 700;
   }
   .roadmap-item .status.done { background: var(--accent); color: var(--bg); }
-  .roadmap-item .status.confirmed { background: var(--cyan); color: var(--bg); }
-  .roadmap-item .status.pending { background: var(--bg3); color: var(--fg2); border: 1px solid var(--border); }
-  .roadmap-item .info h4 { font-size: .95rem; font-weight: 600; }
-  .roadmap-item .info p { font-size: .85rem; color: var(--fg2); }
+  .roadmap-item .info h4 { font-size: .95rem; font-weight: 600; margin-bottom: .25rem; }
+  .roadmap-item .info p { font-size: .85rem; color: var(--fg2); line-height: 1.6; }
+  .roadmap-item .info code {
+    background: var(--bg4); padding: .1rem .4rem; border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace; font-size: .8rem; color: var(--accent);
+  }
 
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
-  @media (max-width: 768px) {
-    .grid-2 { grid-template-columns: 1fr; }
-    .hero h1 { font-size: 2.25rem; }
-    nav .links { display: none; }
-    section { padding: 3rem 1.25rem; }
-    .pkg-table { font-size: .8rem; }
+  .repo-table td:first-child { font-weight: 500; }
+  .repo-table td:first-child a {
+    color: var(--accent); font-weight: 600;
+  }
+  .repo-table td:first-child a:hover { color: var(--accent2); }
+
+  .card-outline {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 1.75rem;
+    transition: border-color .2s;
+  }
+  .card-outline:hover { border-color: var(--border2); }
+
+  .code-block {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.5rem;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: .8rem; line-height: 1.8;
+    overflow-x: auto; margin: 1.5rem 0;
+  }
+  .code-block .comment { color: #444; }
+  .code-block .prompt { color: var(--accent); }
+
+  .note {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.25rem 1.5rem;
+    margin-top: 1.5rem;
+  }
+  .note p { color: var(--fg2); font-size: .85rem; }
+  .note code {
+    background: var(--bg4); padding: .1rem .4rem; border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace; font-size: .8rem; color: var(--accent);
   }
 
   footer {
     border-top: 1px solid var(--border);
-    padding: 2rem;
+    padding: 3rem 2rem;
     text-align: center;
-    color: var(--fg2);
-    font-size: .85rem;
   }
+  footer p { color: var(--fg3); font-size: .85rem; }
   footer a { color: var(--fg2); }
   footer a:hover { color: var(--fg); }
+  footer .social { display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 1rem; }
+  footer .social a {
+    color: var(--fg3); font-size: .85rem; font-weight: 500;
+    display: flex; align-items: center; gap: .35rem;
+  }
+  footer .social a:hover { color: var(--fg); }
+
+  @media (max-width: 768px) {
+    nav .links { display: none; }
+    .hero h1 { font-size: 2.25rem; }
+    section { padding: 4rem 1.25rem; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .features-grid { grid-template-columns: 1fr; }
+    table { font-size: .8rem; }
+    .about-grid { gap: 2rem; }
+  }
+
+  @media (max-width: 480px) {
+    .stats-grid { grid-template-columns: 1fr; }
+    .hero .buttons { flex-direction: column; align-items: center; }
+    .hero { min-height: auto; padding: 8rem 1.25rem 4rem; }
+  }
+
+  .fade-in {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity .7s ease-out, transform .7s ease-out;
+  }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  .accent-bar {
+    width: 40px; height: 3px; background: var(--accent);
+    border-radius: 2px; margin-bottom: 1.5rem;
+  }
 </style>
 </head>
 <body>
 
-<nav>
-  <div class="logo">&lt;<span>Swell</span>OS /&gt;</div>
+<nav id="nav">
+  <div class="logo">
+    <svg viewBox="0 0 28 28" fill="none">
+      <rect x="2" y="2" width="24" height="24" rx="6" stroke="currentColor" stroke-width="2" fill="none"/>
+      <path d="M8 14l4 4 8-8" stroke="#5cd4af" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    &lt;<span>Swell</span>OS /&gt;
+  </div>
   <div class="links">
     <a href="#about">About</a>
     <a href="#features">Features</a>
     <a href="#packages">Packages</a>
     <a href="#progress">Progress</a>
     <a href="#repos">Repos</a>
+    <a href="#download">Download</a>
     <a href="#build">Build</a>
   </div>
 </nav>
 
 <div class="hero">
-  <div class="badge">v0.1 · <b>alpha</b> — 59 package scripts</div>
+  <div class="grid-bg"></div>
+  <div class="badge">
+    <span class="dot"></span>
+    v0.1 · <b>alpha</b> — 59 package scripts
+  </div>
   <h1>A Linux distribution,<br>built <span>from scratch</span></h1>
-  <p>SwellOS is a lightweight, performance-tuned Linux distribution built from LFS/BLFS with a custom monolithic kernel, runit init, and the sbpm package manager.</p>
+  <p>A lightweight, performance-tuned distribution with a custom monolithic kernel, runit init, and the sbpm package manager.</p>
   <div class="buttons">
-    <a href="#packages" class="btn btn-primary">Browse packages</a>
-    <a href="#repos" class="btn btn-secondary">Source code</a>
+    <a href="#packages" class="btn btn-primary">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 4l6 3 6-3M2 8l6 3 6-3M2 12l6 3 6-3"/></svg>
+      Browse packages
+    </a>
+    <a href="https://github.com/SwellOS/swellos" class="btn btn-secondary">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      Source code
+    </a>
+  </div>
+  <div class="scroll-indicator">
+    <div class="mouse"></div>
+    scroll
   </div>
 </div>
 
 <section id="about">
+  <div class="accent-bar"></div>
   <h2>What is <span>SwellOS</span>?</h2>
   <p class="subtitle">An independent Linux distribution built from the ground up — not a fork or derivative of any existing distro.</p>
-  <div class="grid-2">
-    <div>
-      <p style="color:var(--fg2);margin-bottom:1rem">SwellOS follows the Linux From Scratch philosophy: every component is compiled from source, optimized for performance, and hand-picked. The result is a lean, fast system with no bloat.</p>
-      <p style="color:var(--fg2);margin-bottom:1rem">Now in <strong style="color:var(--fg)">alpha</strong> — all 9 milestones complete. The full package catalog (59 scripts across 8 categories) and the <code>swell-build</code> toolchain are ready. Bootable ISO generation is included.</p>
-      <p style="color:var(--fg2)">The distribution is designed for users who want a modern, performant Linux experience with full control over what goes into their system.</p>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>SwellOS follows the Linux From Scratch philosophy: every component is compiled from source, optimized for performance, and hand-picked. The result is a lean, fast system with no bloat.</p>
+      <p>Now in <strong>alpha</strong> — all 9 milestones complete. The full package catalog (59 scripts across 8 categories) and the <code>swell-build</code> toolchain are ready. Bootable ISO generation is included.</p>
+      <p>The distribution is designed for users who want a modern, performant Linux experience with full control over what goes into their system.</p>
     </div>
-    <div>
-      <div class="cards">
-        <div class="card"><h3>Milestones</h3><div class="value">9 / 9</div><p>Kernel → LFS → ISO</p></div>
-        <div class="card"><h3>Kernel</h3><div class="value cyan">6.x</div><p>Custom monolithic, preempt tuned</p></div>
-        <div class="card"><h3>Init</h3><div class="value green">runit</div><p>Service supervision</p></div>
-        <div class="card"><h3>Packages</h3><div class="value yellow">59</div><p>Scripts in 8 categories</p></div>
-        <div class="card"><h3>Package mgr</h3><div class="value">sbpm</div><p>Rust, binary .swell format</p></div>
-        <div class="card"><h3>Status</h3><div class="value">alpha</div><p>Source release</p></div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h3>Milestones</h3>
+        <div class="value">9/9</div>
+        <p>Kernel → LFS → ISO</p>
+      </div>
+      <div class="stat-card">
+        <h3>Kernel</h3>
+        <div class="value cyan">6.x</div>
+        <p>Monolithic, no modules</p>
+      </div>
+      <div class="stat-card">
+        <h3>Init</h3>
+        <div class="value green">runit</div>
+        <p>Service supervision</p>
+      </div>
+      <div class="stat-card">
+        <h3>Packages</h3>
+        <div class="value yellow">59</div>
+        <p>8 categories</p>
+      </div>
+      <div class="stat-card">
+        <h3>Package mgr</h3>
+        <div class="value accent">sbpm</div>
+        <p>Rust, binary .swell</p>
+      </div>
+      <div class="stat-card">
+        <h3>Status</h3>
+        <div class="value">alpha</div>
+        <p>Source release</p>
       </div>
     </div>
   </div>
 </section>
 
-<section id="features" style="background:var(--bg2);border-radius:24px;margin:0 2rem;max-width:1100px">
+<div class="section-divider"></div>
+
+<section id="features">
+  <div class="accent-bar"></div>
   <h2>Key <span>features</span></h2>
   <p class="subtitle">What makes SwellOS different from other distributions.</p>
-  <div class="features">
-    <div class="feature">
+  <div class="features-grid">
+    <div class="feature-card">
       <div class="icon">⚡</div>
       <h3>Performance tuned</h3>
       <p>Preemptible kernel (<code>CONFIG_PREEMPT</code>), tickless idle (<code>NO_HZ_FULL</code>), schedutil governor, ZSTD kernel compression — optimized for desktop responsiveness.</p>
     </div>
-    <div class="feature">
+    <div class="feature-card">
       <div class="icon">🧱</div>
       <h3>Monolithic kernel</h3>
       <p>No module support (<code>CONFIG_MODULES=n</code>). All drivers compiled in. NVMe, SATA, virtio, e1000, USB, ext4, btrfs, vfat — all built-in.</p>
     </div>
-    <div class="feature">
+    <div class="feature-card">
       <div class="icon">📦</div>
       <h3>sbpm + swell-build</h3>
       <p>Custom Rust toolchain: <code>sbpm</code> for binary package management, <code>swell-build</code> for source builds and ISO generation.</p>
     </div>
-    <div class="feature">
+    <div class="feature-card">
       <div class="icon">🔄</div>
       <h3>runit init</h3>
       <p>Fast service supervision: one-time startup (stage 1), supervised services via runsvdir (stage 2), clean shutdown (stage 3).</p>
     </div>
-    <div class="feature">
+    <div class="feature-card">
       <div class="icon">🏗️</div>
       <h3>From scratch</h3>
       <p>Not based on Arch, Debian, or any existing distro. Every package cross-compiled from source for SwellOS using the host toolchain.</p>
     </div>
-    <div class="feature">
+    <div class="feature-card">
       <div class="icon">🌐</div>
       <h3>59 package scripts</h3>
       <p>Core toolchain, desktop environments (KDE Plasma 6, Hyprland, i3, WindowMaker), browsers, dev tools, gaming, multimedia, office, network.</p>
@@ -285,98 +563,116 @@
   </div>
 </section>
 
+<div class="section-divider"></div>
+
 <section id="packages">
+  <div class="accent-bar"></div>
   <h2>Package <span>catalog</span></h2>
   <p class="subtitle">59 build scripts across 8 categories, ready to compile with <code>swell-build</code>.</p>
 
-  <h3 style="font-size:1.1rem;margin-bottom:1rem;color:var(--accent)">Core (16)</h3>
-  <table class="pkg-table">
-    <thead>
-      <tr><th>Package</th><th>Version</th><th>Depends</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>linux-api-headers</td><td>6.12</td><td>—</td></tr>
-      <tr><td>glibc</td><td>2.40</td><td>linux-api-headers</td></tr>
-      <tr><td>binutils</td><td>2.43.1</td><td>glibc</td></tr>
-      <tr><td>gcc</td><td>14.2.0</td><td>glibc, binutils</td></tr>
-      <tr><td>dash</td><td>0.5.12</td><td>glibc</td></tr>
-      <tr><td>coreutils</td><td>9.5</td><td>glibc</td></tr>
-      <tr><td>make</td><td>4.4.1</td><td>glibc</td></tr>
-      <tr><td>sed</td><td>4.9</td><td>glibc</td></tr>
-      <tr><td>grep</td><td>3.11</td><td>glibc</td></tr>
-      <tr><td>gawk</td><td>5.3.0</td><td>glibc</td></tr>
-      <tr><td>file</td><td>5.45</td><td>glibc</td></tr>
-      <tr><td>diffutils</td><td>3.10</td><td>glibc</td></tr>
-      <tr><td>findutils</td><td>4.10.0</td><td>glibc</td></tr>
-      <tr><td>patch</td><td>2.7.6</td><td>glibc</td></tr>
-      <tr><td>runit</td><td>2.1.2</td><td>glibc</td></tr>
-      <tr><td>sbpm</td><td>0.1.0</td><td>glibc</td></tr>
-    </tbody>
-  </table>
+  <div class="pkg-section">
+    <h3 style="color:var(--accent)">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="1" width="16" height="16" rx="3"/></svg>
+      Core
+      <span class="count">16</span>
+    </h3>
+    <table>
+      <thead><tr><th>Package</th><th>Version</th><th>Depends</th></tr></thead>
+      <tbody>
+        <tr><td>linux-api-headers</td><td>6.12</td><td>—</td></tr>
+        <tr><td>glibc</td><td>2.40</td><td>linux-api-headers</td></tr>
+        <tr><td>binutils</td><td>2.43.1</td><td>glibc</td></tr>
+        <tr><td>gcc</td><td>14.2.0</td><td>glibc, binutils</td></tr>
+        <tr><td>dash</td><td>0.5.12</td><td>glibc</td></tr>
+        <tr><td>coreutils</td><td>9.5</td><td>glibc</td></tr>
+        <tr><td>make</td><td>4.4.1</td><td>glibc</td></tr>
+        <tr><td>sed</td><td>4.9</td><td>glibc</td></tr>
+        <tr><td>grep</td><td>3.11</td><td>glibc</td></tr>
+        <tr><td>gawk</td><td>5.3.0</td><td>glibc</td></tr>
+        <tr><td>file</td><td>5.45</td><td>glibc</td></tr>
+        <tr><td>diffutils</td><td>3.10</td><td>glibc</td></tr>
+        <tr><td>findutils</td><td>4.10.0</td><td>glibc</td></tr>
+        <tr><td>patch</td><td>2.7.6</td><td>glibc</td></tr>
+        <tr><td>runit</td><td>2.1.2</td><td>glibc</td></tr>
+        <tr><td>sbpm</td><td>0.1.0</td><td>glibc</td></tr>
+      </tbody>
+    </table>
+  </div>
 
-  <h3 style="font-size:1.1rem;margin:2rem 0 1rem;color:var(--cyan)">Desktop (16)</h3>
-  <table class="pkg-table">
-    <thead>
-      <tr><th>Package</th><th>Version</th><th>Type</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>dbus</td><td>1.15.8</td><td>Infrastructure</td></tr>
-      <tr><td>elogind</td><td>255.5</td><td>Infrastructure</td></tr>
-      <tr><td>polkit</td><td>125</td><td>Infrastructure</td></tr>
-      <tr><td>wayland</td><td>1.23.0</td><td>Infrastructure</td></tr>
-      <tr><td>wayland-protocols</td><td>1.36</td><td>Infrastructure</td></tr>
-      <tr><td>xorg-server</td><td>21.1.14</td><td>Infrastructure</td></tr>
-      <tr><td>libxcb</td><td>1.17</td><td>Infrastructure</td></tr>
-      <tr><td>pipewire</td><td>1.2.6</td><td>Infrastructure</td></tr>
-      <tr><td>wireplumber</td><td>0.5.6</td><td>Infrastructure</td></tr>
-      <tr><td>mesa</td><td>24.2.5</td><td>Infrastructure</td></tr>
-      <tr><td>libinput</td><td>1.27.1</td><td>Infrastructure</td></tr>
-      <tr><td>networkmanager</td><td>1.48.12</td><td>Infrastructure</td></tr>
-      <tr><td>plasma-desktop</td><td>6.2.0</td><td>DE (monolithic)</td></tr>
-      <tr><td>hyprland</td><td>0.46.2</td><td>WM</td></tr>
-      <tr><td>i3-wm</td><td>4.23</td><td>WM</td></tr>
-      <tr><td>windowmaker</td><td>0.96.0</td><td>WM</td></tr>
-    </tbody>
-  </table>
+  <div class="pkg-section">
+    <h3 style="color:var(--cyan)">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="1" width="16" height="16" rx="3"/></svg>
+      Desktop
+      <span class="count">16</span>
+    </h3>
+    <table>
+      <thead><tr><th>Package</th><th>Version</th><th>Type</th></tr></thead>
+      <tbody>
+        <tr><td>dbus</td><td>1.15.8</td><td>Infrastructure</td></tr>
+        <tr><td>elogind</td><td>255.5</td><td>Infrastructure</td></tr>
+        <tr><td>polkit</td><td>125</td><td>Infrastructure</td></tr>
+        <tr><td>wayland</td><td>1.23.0</td><td>Infrastructure</td></tr>
+        <tr><td>wayland-protocols</td><td>1.36</td><td>Infrastructure</td></tr>
+        <tr><td>xorg-server</td><td>21.1.14</td><td>Infrastructure</td></tr>
+        <tr><td>libxcb</td><td>1.17</td><td>Infrastructure</td></tr>
+        <tr><td>pipewire</td><td>1.2.6</td><td>Infrastructure</td></tr>
+        <tr><td>wireplumber</td><td>0.5.6</td><td>Infrastructure</td></tr>
+        <tr><td>mesa</td><td>24.2.5</td><td>Infrastructure</td></tr>
+        <tr><td>libinput</td><td>1.27.1</td><td>Infrastructure</td></tr>
+        <tr><td>networkmanager</td><td>1.48.12</td><td>Infrastructure</td></tr>
+        <tr><td>plasma-desktop</td><td>6.2.0</td><td>DE (monolithic)</td></tr>
+        <tr><td>hyprland</td><td>0.46.2</td><td>WM</td></tr>
+        <tr><td>i3-wm</td><td>4.23</td><td>WM</td></tr>
+        <tr><td>windowmaker</td><td>0.96.0</td><td>WM</td></tr>
+      </tbody>
+    </table>
+  </div>
 
-  <h3 style="font-size:1.1rem;margin:2rem 0 1rem;color:var(--fg)">Browser · Dev · Gaming · Multimedia · Office · Network (27)</h3>
-  <table class="pkg-table">
-    <thead>
-      <tr><th>Package</th><th>Version</th><th>Category</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>firefox</td><td>135.0.1</td><td><span class="tag browser">browser</span></td></tr>
-      <tr><td>chromium</td><td>133.0.6943.53</td><td><span class="tag browser">browser</span></td></tr>
-      <tr><td>llvm</td><td>19.1.5</td><td><span class="tag dev">dev</span></td></tr>
-      <tr><td>rust</td><td>1.83.0</td><td><span class="tag dev">dev</span></td></tr>
-      <tr><td>git</td><td>2.47.1</td><td><span class="tag dev">dev</span></td></tr>
-      <tr><td>cmake</td><td>3.31.1</td><td><span class="tag dev">dev</span></td></tr>
-      <tr><td>python</td><td>3.13.1</td><td><span class="tag dev">dev</span></td></tr>
-      <tr><td>vim</td><td>9.1.0795</td><td><span class="tag dev">dev</span></td></tr>
-      <tr><td>nano</td><td>8.2</td><td><span class="tag dev">dev</span></td></tr>
-      <tr><td>steam</td><td>1.0.0.81</td><td><span class="tag gaming">gaming</span></td></tr>
-      <tr><td>wine</td><td>10.0</td><td><span class="tag gaming">gaming</span></td></tr>
-      <tr><td>dxvk</td><td>2.4.1</td><td><span class="tag gaming">gaming</span></td></tr>
-      <tr><td>mangohud</td><td>0.8.0</td><td><span class="tag gaming">gaming</span></td></tr>
-      <tr><td>ffmpeg</td><td>7.1</td><td><span class="tag multimedia">multimedia</span></td></tr>
-      <tr><td>gimp</td><td>2.10.38</td><td><span class="tag multimedia">multimedia</span></td></tr>
-      <tr><td>obs-studio</td><td>31.0.1</td><td><span class="tag multimedia">multimedia</span></td></tr>
-      <tr><td>blender</td><td>4.3.0</td><td><span class="tag multimedia">multimedia</span></td></tr>
-      <tr><td>audacity</td><td>3.7.1</td><td><span class="tag multimedia">multimedia</span></td></tr>
-      <tr><td>libreoffice</td><td>24.8.4</td><td><span class="tag office">office</span></td></tr>
-      <tr><td>thunderbird</td><td>128.5.0</td><td><span class="tag office">office</span></td></tr>
-      <tr><td>openssh</td><td>9.9p1</td><td><span class="tag network">network</span></td></tr>
-      <tr><td>dhcpcd</td><td>10.1.0</td><td><span class="tag network">network</span></td></tr>
-      <tr><td>wpa_supplicant</td><td>2.11</td><td><span class="tag network">network</span></td></tr>
-      <tr><td>iwd</td><td>3.2</td><td><span class="tag network">network</span></td></tr>
-      <tr><td>ell</td><td>0.72</td><td><span class="tag network">network</span></td></tr>
-    </tbody>
-  </table>
+  <div class="pkg-section">
+    <h3>
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="1" width="16" height="16" rx="3"/></svg>
+      Browser · Dev · Gaming · Multimedia · Office · Network
+      <span class="count">27</span>
+    </h3>
+    <table>
+      <thead><tr><th>Package</th><th>Version</th><th>Category</th></tr></thead>
+      <tbody>
+        <tr><td>firefox</td><td>135.0.1</td><td><span class="tag browser">browser</span></td></tr>
+        <tr><td>chromium</td><td>133.0.6943.53</td><td><span class="tag browser">browser</span></td></tr>
+        <tr><td>llvm</td><td>19.1.5</td><td><span class="tag dev">dev</span></td></tr>
+        <tr><td>rust</td><td>1.83.0</td><td><span class="tag dev">dev</span></td></tr>
+        <tr><td>git</td><td>2.47.1</td><td><span class="tag dev">dev</span></td></tr>
+        <tr><td>cmake</td><td>3.31.1</td><td><span class="tag dev">dev</span></td></tr>
+        <tr><td>python</td><td>3.13.1</td><td><span class="tag dev">dev</span></td></tr>
+        <tr><td>vim</td><td>9.1.0795</td><td><span class="tag dev">dev</span></td></tr>
+        <tr><td>nano</td><td>8.2</td><td><span class="tag dev">dev</span></td></tr>
+        <tr><td>steam</td><td>1.0.0.81</td><td><span class="tag gaming">gaming</span></td></tr>
+        <tr><td>wine</td><td>10.0</td><td><span class="tag gaming">gaming</span></td></tr>
+        <tr><td>dxvk</td><td>2.4.1</td><td><span class="tag gaming">gaming</span></td></tr>
+        <tr><td>mangohud</td><td>0.8.0</td><td><span class="tag gaming">gaming</span></td></tr>
+        <tr><td>ffmpeg</td><td>7.1</td><td><span class="tag multimedia">multimedia</span></td></tr>
+        <tr><td>gimp</td><td>2.10.38</td><td><span class="tag multimedia">multimedia</span></td></tr>
+        <tr><td>obs-studio</td><td>31.0.1</td><td><span class="tag multimedia">multimedia</span></td></tr>
+        <tr><td>blender</td><td>4.3.0</td><td><span class="tag multimedia">multimedia</span></td></tr>
+        <tr><td>audacity</td><td>3.7.1</td><td><span class="tag multimedia">multimedia</span></td></tr>
+        <tr><td>libreoffice</td><td>24.8.4</td><td><span class="tag office">office</span></td></tr>
+        <tr><td>thunderbird</td><td>128.5.0</td><td><span class="tag office">office</span></td></tr>
+        <tr><td>openssh</td><td>9.9p1</td><td><span class="tag network">network</span></td></tr>
+        <tr><td>dhcpcd</td><td>10.1.0</td><td><span class="tag network">network</span></td></tr>
+        <tr><td>wpa_supplicant</td><td>2.11</td><td><span class="tag network">network</span></td></tr>
+        <tr><td>iwd</td><td>3.2</td><td><span class="tag network">network</span></td></tr>
+        <tr><td>ell</td><td>0.72</td><td><span class="tag network">network</span></td></tr>
+      </tbody>
+    </table>
+  </div>
 
-  <p style="color:var(--fg2);font-size:.85rem;margin-top:1rem">All packages are build scripts in the <a href="https://github.com/SwellOS/packages">packages</a> repo. Build with <code style="color:var(--accent)">swell-build pkg &lt;name&gt;</code> or <code style="color:var(--accent)">swell-build world -j 4</code>.</p>
+  <p style="color:var(--fg3);font-size:.85rem;margin-top:1rem">All packages are build scripts in the <a href="https://github.com/SwellOS/packages">packages</a> repo. Build with <code style="color:var(--accent)">swell-build pkg &lt;name&gt;</code> or <code style="color:var(--accent)">swell-build world -j 4</code>.</p>
 </section>
 
+<div class="section-divider"></div>
+
 <section id="progress">
+  <div class="accent-bar"></div>
   <h2>Build <span>progress</span></h2>
   <p class="subtitle">All 9 milestones for v0.1 "Swell Inlet" are complete.</p>
 
@@ -398,7 +694,7 @@
     <div class="status done">✓</div>
     <div class="info">
       <h4>sbpm package manager — full Rust implementation</h4>
-      <p>Binary-first package manager. Install (-S), remove (-R), upgrade (-U), search (-Ss), freeze/unfreeze. .swell archives (tar.zst + metadata.toml). JSON repo index.</p>
+      <p>Binary-first package manager. Install (<code>-S</code>), remove (<code>-R</code>), upgrade (<code>-U</code>), search (<code>-Ss</code>), freeze/unfreeze. <code>.swell</code> archives (tar.zst + metadata.toml). JSON repo index.</p>
     </div>
   </div>
   <div class="roadmap-item">
@@ -412,13 +708,13 @@
     <div class="status done">✓</div>
     <div class="info">
       <h4>Desktop infrastructure + environments</h4>
-      <p>12 desktop infrastructure packages (dbus, elogind, polkit, wayland, xorg, pipewire, mesa, etc.) + 4 DE/WM scripts (KDE Plasma 6, Hyprland, i3, WindowMaker) + metapackages.</p>
+      <p>12 desktop infrastructure packages + 4 DE/WM scripts (KDE Plasma 6, Hyprland, i3, WindowMaker) + metapackages.</p>
     </div>
   </div>
   <div class="roadmap-item">
     <div class="status done">✓</div>
     <div class="info">
-      <h4>Browser, dev, gaming, multimedia, office, network</h4>
+      <h4>Applications — browser, dev, gaming, multimedia, office, network</h4>
       <p>27 additional package scripts: firefox, chromium, llvm, rust, git, cmake, python, vim, nano, steam, wine, dxvk, mangohud, ffmpeg, gimp, obs-studio, blender, audacity, libreoffice, thunderbird, openssh, dhcpcd, wpa_supplicant, iwd, ell.</p>
     </div>
   </div>
@@ -426,14 +722,14 @@
     <div class="status done">✓</div>
     <div class="info">
       <h4>swell-install — TUI installer</h4>
-      <p>Rust-based TUI installer: partition management, metapackage selection (KDE, GNOME, Xfce, Hyprland, i3, WindowMaker, dev, browser, gaming, multimedia, office), full install flow.</p>
+      <p>Rust-based TUI installer: partition management, metapackage selection, full install flow.</p>
     </div>
   </div>
   <div class="roadmap-item">
     <div class="status done">✓</div>
     <div class="info">
       <h4>swell-build — source build system + ISO generation</h4>
-      <p>Full Rust build system: <code>swell-build pkg</code> (single), <code>world -j N</code> (parallel with dep ordering), <code>repo</code> (repo.db), <code>info</code>, <code>list</code>, <code>clean</code>, <code>iso</code> (bootable live ISO with GRUB+UEFI, initramfs, busybox, squashfs).</p>
+      <p>Full Rust build system: <code>pkg</code>, <code>world -j N</code>, <code>repo</code>, <code>info</code>, <code>list</code>, <code>clean</code>, <code>iso</code> (bootable live ISO with GRUB+UEFI, initramfs, busybox, squashfs).</p>
     </div>
   </div>
   <div class="roadmap-item">
@@ -445,86 +741,78 @@
   </div>
 </section>
 
+<div class="section-divider"></div>
+
+<section id="download">
+  <div class="accent-bar"></div>
+  <h2>Download <span>SwellOS</span></h2>
+  <p class="subtitle">Pre-built ISOs and binary packages for a quick start.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem">
+    <div class="stat-card" style="text-align:left;padding:2rem">
+      <h3 style="text-transform:none;letter-spacing:0;font-size:.85rem">Live ISO</h3>
+      <p style="font-size:.85rem;color:var(--fg2);margin:.75rem 0 1.25rem">Bootable hybrid BIOS/UEFI ISO with overlayfs live environment.</p>
+      <a href="https://github.com/SwellOS/swellos/releases/tag/v0.1-alpha" class="btn btn-primary" style="display:inline-flex">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 1v10M4 7l4 4 4-4M2 13h12"/></svg>
+        Download v0.1-alpha
+      </a>
+    </div>
+    <div class="stat-card" style="text-align:left;padding:2rem">
+      <h3 style="text-transform:none;letter-spacing:0;font-size:.85rem">Binary Packages</h3>
+      <p style="font-size:.85rem;color:var(--fg2);margin:.75rem 0 1.25rem">Pre-built .swell packages for the binary package repository.</p>
+      <a href="https://packages.swellos.org" class="btn btn-secondary" style="display:inline-flex">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="8" cy="8" r="6"/><path d="M2 8h12M8 2a9.5 9.5 0 010 12 9.5 9.5 0 010-12z"/></svg>
+        Browse packages.swellos.org
+      </a>
+    </div>
+  </div>
+
+  <div class="note">
+    <p>The alpha release is a <strong>source-first</strong> release. Pre-built packages and ISOs are generated from CI builds. For full control, <a href="#build">build everything from source</a>.</p>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
 <section id="repos">
+  <div class="accent-bar"></div>
   <h2>Source <span>repositories</span></h2>
   <p class="subtitle">All SwellOS code is open source on GitHub.</p>
 
-  <table class="pkg-table">
-    <thead>
-      <tr><th>Repository</th><th>Description</th><th>Language</th></tr>
-    </thead>
+  <table class="repo-table">
+    <thead><tr><th>Repository</th><th>Description</th><th>Language</th></tr></thead>
     <tbody>
-      <tr>
-        <td><a href="https://github.com/SwellOS/swellos">swellos</a></td>
-        <td>Meta-repo — submodules for all components</td>
-        <td>—</td>
-      </tr>
-      <tr>
-        <td><a href="https://github.com/SwellOS/kernel">kernel</a></td>
-        <td>Custom Linux kernel fork with SwellOS config</td>
-        <td>C + Shell</td>
-      </tr>
-      <tr>
-        <td><a href="https://github.com/SwellOS/sbpm">sbpm</a></td>
-        <td>Package manager — download, install, remove .swell packages</td>
-        <td>Rust</td>
-      </tr>
-      <tr>
-        <td><a href="https://github.com/SwellOS/swell-build">swell-build</a></td>
-        <td>Build system — source builds, ISO generation, repo management</td>
-        <td>Rust</td>
-      </tr>
-      <tr>
-        <td><a href="https://github.com/SwellOS/swell-installer">swell-installer</a></td>
-        <td>TUI installer — partition, select packages, build, install</td>
-        <td>Rust</td>
-      </tr>
-      <tr>
-        <td><a href="https://github.com/SwellOS/packages">packages</a></td>
-        <td>59 package build scripts across 8 categories</td>
-        <td>Shell</td>
-      </tr>
-      <tr>
-        <td><a href="https://github.com/SwellOS/docs">docs</a></td>
-        <td>LFS-style documentation book</td>
-        <td>Markdown</td>
-      </tr>
-      <tr>
-        <td><a href="https://github.com/SwellOS/website">website</a></td>
-        <td>SwellOS website source</td>
-        <td>HTML</td>
-      </tr>
+      <tr><td><a href="https://github.com/SwellOS/swellos">swellos</a></td><td>Meta-repo — submodules for all components</td><td>—</td></tr>
+      <tr><td><a href="https://github.com/SwellOS/kernel">kernel</a></td><td>Custom Linux kernel fork with SwellOS config</td><td>C + Shell</td></tr>
+      <tr><td><a href="https://github.com/SwellOS/sbpm">sbpm</a></td><td>Package manager — download, install, remove .swell packages</td><td>Rust</td></tr>
+      <tr><td><a href="https://github.com/SwellOS/swell-build">swell-build</a></td><td>Build system — source builds, ISO generation, repo management</td><td>Rust</td></tr>
+      <tr><td><a href="https://github.com/SwellOS/swell-installer">swell-installer</a></td><td>TUI installer — partition, select packages, build, install</td><td>Rust</td></tr>
+      <tr><td><a href="https://github.com/SwellOS/packages">packages</a></td><td>59 package build scripts across 8 categories</td><td>Shell</td></tr>
+      <tr><td><a href="https://github.com/SwellOS/docs">docs</a></td><td>LFS-style documentation book</td><td>Markdown</td></tr>
+      <tr><td><a href="https://github.com/SwellOS/website">website</a></td><td>SwellOS website source</td><td>HTML</td></tr>
     </tbody>
   </table>
 
-  <div style="margin-top:2rem;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.5rem">
-    <h3 style="font-size:1rem;margin-bottom:.75rem;color:var(--accent)">Build workspace layout</h3>
+  <div class="card-outline" style="margin-top:2rem">
+    <h3 style="font-size:.95rem;margin-bottom:1rem;color:var(--accent);font-weight:600">Build workspace layout</h3>
     <div class="code-block" style="margin:0">
 <span class="comment"># /usr/src/swell/ — standard build workspace</span><br>
 <span class="prompt">/usr/src/swell/</span><br>
-├── packages/              <span class="comment"># Package definitions (git submodule)</span><br>
-│   ├── core/              <span class="comment"># 16 core packages</span><br>
-│   ├── desktop/           <span class="comment"># 16 desktop infrastructure + DEs</span><br>
-│   ├── browser/           <span class="comment"># Firefox, Chromium</span><br>
-│   ├── dev/               <span class="comment"># 7 dev tools</span><br>
-│   ├── gaming/            <span class="comment"># Steam, Wine, DXVK, MangoHud</span><br>
-│   ├── multimedia/        <span class="comment"># 5 multimedia apps</span><br>
-│   ├── office/            <span class="comment"># LibreOffice, Thunderbird</span><br>
-│   ├── network/           <span class="comment"># 5 network packages</span><br>
-│   └── meta/              <span class="comment"># Metapackages (KDE, dev, gaming, etc.)</span><br>
-├── sources/               <span class="comment"># Downloaded source tarballs</span><br>
-├── build/                 <span class="comment"># Per-package build directories</span><br>
-├── dest/                  <span class="comment"># Per-package DESTDIR roots</span><br>
-├── repo/                  <span class="comment"># Output: repo.db + .swell packages</span><br>
-│   ├── packages/          <span class="comment"># .swell archives</span><br>
-│   └── repo.db            <span class="comment"># JSON package index</span><br>
-├── iso-work/              <span class="comment"># ISO staging</span><br>
+├── packages/     <span class="comment"># 59 package definitions (git submodule)</span><br>
+├── sources/      <span class="comment"># Downloaded source tarballs</span><br>
+├── build/        <span class="comment"># Per-package build directories</span><br>
+├── dest/         <span class="comment"># Per-package DESTDIR roots</span><br>
+├── repo/         <span class="comment"># repo.db + .swell packages</span><br>
+├── iso-work/     <span class="comment"># ISO staging</span><br>
 └── swellos-0.1-x86_64.iso <span class="comment"># Bootable ISO</span><br>
     </div>
   </div>
 </section>
 
+<div class="section-divider"></div>
+
 <section id="build">
+  <div class="accent-bar"></div>
   <h2>Build your <span>own</span></h2>
   <p class="subtitle">SwellOS is built entirely from source. Here's how the build pipeline works.</p>
 
@@ -547,23 +835,54 @@
     <span class="prompt">$</span> ./target/release/swell-build repo<br>
     <br>
     <span class="comment"># 6. Build bootable ISO</span><br>
-    <span class="prompt">$</span> ./target/release/swell-build iso \<br>
-    &nbsp;&nbsp;-K /path/to/bzImage -f<br>
+    <span class="prompt">$</span> ./target/release/swell-build iso -K /path/to/bzImage -f<br>
     <br>
     <span class="comment"># 7. Test in QEMU</span><br>
-    <span class="prompt">$</span> qemu-system-x86_64 -m 2G \<br>
-    &nbsp;&nbsp;-cdrom /usr/src/swell/repo/swellos-0.1-x86_64.iso \<br>
-    &nbsp;&nbsp;-cpu host -enable-kvm -serial stdio
+    <span class="prompt">$</span> qemu-system-x86_64 -m 2G -cdrom /usr/src/swell/repo/swellos-0.1-x86_64.iso -cpu host -enable-kvm -serial stdio
   </div>
 
-  <div style="margin-top:2rem;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:1.25rem">
-    <p style="color:var(--fg2);font-size:.9rem">All 59 packages are build scripts in the <a href="https://github.com/SwellOS/packages">packages</a> repo. Dependencies are resolved automatically by <code>swell-build world</code>. The <code>iso</code> subcommand requires <code>mksquashfs</code>, <code>xorriso</code>, <code>grub-mkrescue</code>, and a pre-built <code>busybox</code> binary on the host.</p>
+  <div class="note">
+    <p>All 59 packages are build scripts in the <a href="https://github.com/SwellOS/packages">packages</a> repo. Dependencies are resolved automatically by <code>swell-build world</code>. The <code>iso</code> subcommand requires <code>mksquashfs</code>, <code>xorriso</code>, <code>grub-mkrescue</code>, and a pre-built <code>busybox</code> binary on the host.</p>
   </div>
 </section>
 
 <footer>
-  <p>SwellOS · Built from scratch · <a href="https://github.com/SwellOS">GitHub organization</a> · <a href="https://github.com/SwellOS/swellos/releases/tag/v0.1-alpha">v0.1-alpha release</a></p>
+  <div class="social">
+    <a href="https://github.com/SwellOS">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      GitHub
+    </a>
+    <a href="https://github.com/SwellOS/swellos/releases/tag/v0.1-alpha">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 4l6 3 6-3M2 8l6 3 6-3M2 12l6 3 6-3"/></svg>
+      v0.1-alpha
+    </a>
+    <a href="https://swellos.github.io/packages/repo.db">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="8" cy="8" r="6"/><path d="M2 8h12M8 2a9.5 9.5 0 010 12 9.5 9.5 0 010-12z"/></svg>
+      repo.db
+    </a>
+  </div>
+  <p>SwellOS · Built from scratch · <a href="https://github.com/SwellOS">GitHub organization</a></p>
 </footer>
 
+<script>
+  // Navbar border on scroll
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 20);
+  });
+
+  // Fade-in on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: .1 });
+
+  document.querySelectorAll('section, .hero .badge, .hero h1, .hero p, .hero .buttons').forEach(el => {
+    observer.observe(el);
+  });
+</script>
 </body>
 </html>
