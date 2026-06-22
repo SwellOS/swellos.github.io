@@ -458,7 +458,7 @@
   <div class="grid-bg"></div>
   <div class="badge">
     <span class="dot"></span>
-    v0.1 · <b>alpha</b> — 59 packages · sbpm freeze/build
+    v0.1 · <b>alpha</b> — 59 packages · sbpm freeze/rollback
   </div>
   <h1>A Linux distribution,<br>built <span>from scratch</span></h1>
   <p>A lightweight, performance-tuned distribution with a custom monolithic kernel, runit init, and the sbpm package manager.</p>
@@ -486,7 +486,7 @@
     <div class="about-text">
       <p>SwellOS follows the Linux From Scratch philosophy: every component is compiled from source, optimized for performance, and hand-picked. The result is a lean, fast system with no bloat.</p>
       <p>Now in <strong>alpha</strong> — 14 milestones complete. The full package catalog (59 scripts across 8 categories) and the <code>swell-build</code> toolchain are ready. Bootable ISO generation is included. Binary package repository infrastructure and documentation book are live.</p>
-      <p>sbpm now supports <strong>freeze/unfreeze</strong> (per-package upgrade prevention), <strong>build</strong> (source compilation via swell-build), and a comprehensive <strong>docs book</strong> covering the full build pipeline from kernel to desktop.</p>
+      <p>sbpm now supports <strong>freeze/unfreeze/rollback</strong> (per-package upgrade prevention with version pinning), <strong>build</strong> (source compilation via swell-build), and a comprehensive <strong>docs book</strong> covering the full build pipeline from kernel to desktop.</p>
     </div>
     <div class="stats-grid">
       <div class="stat-card">
@@ -512,7 +512,7 @@
       <div class="stat-card">
         <h3>Package mgr</h3>
         <div class="value accent">sbpm</div>
-        <p>Freeze · build · .swell</p>
+        <p>Freeze/rollback · build</p>
       </div>
       <div class="stat-card">
         <h3>Status</h3>
@@ -543,7 +543,7 @@
     <div class="feature-card">
       <div class="icon">📦</div>
       <h3>sbpm + swell-build</h3>
-      <p>Custom Rust toolchain: <code>sbpm</code> for binary package management (install, freeze, build), <code>swell-build</code> for source builds and ISO generation.</p>
+      <p>Custom Rust toolchain: <code>sbpm</code> for binary package management (install, freeze/rollback, build), <code>swell-build</code> for source builds and ISO generation.</p>
     </div>
     <div class="feature-card">
       <div class="icon">🔄</div>
@@ -770,8 +770,8 @@
   <div class="roadmap-item">
     <div class="status done">✓</div>
     <div class="info">
-      <h4>sbpm freeze/unfreeze + build</h4>
-      <p>Per-package freeze/unfreeze with <code>-F</code>/<code>-u</code> aliases. <code>sbpm build</code> command builds packages from source via swell-build and installs the result.</p>
+      <h4>sbpm freeze/unfreeze/rollback + build</h4>
+      <p>Per-package freeze/unfreeze (version pinning for rollback safety) with <code>-F</code>/<code>-u</code> aliases. <code>sbpm build</code> command builds packages from source via swell-build and installs the result.</p>
     </div>
   </div>
 </section>
@@ -872,8 +872,8 @@
     <span class="comment"># 6. Build a single package via sbpm</span><br>
     <span class="prompt">$</span> sbpm build core/sed<br>
     <br>
-    <span class="comment"># 7. Freeze packages to prevent upgrades</span><br>
-    <span class="prompt">$</span> sbpm -F glibc gcc      <span class="comment"># freeze specific</span><br>
+    <span class="comment"># 7. Rollback: freeze packages to pin versions</span><br>
+    <span class="prompt">$</span> sbpm -F glibc gcc      <span class="comment"># freeze specific (rollback protection)</span><br>
     <span class="prompt">$</span> sbpm -u glibc            <span class="comment"># unfreeze specific</span><br>
     <br>
     <span class="comment"># 8. Build bootable ISO</span><br>
