@@ -458,7 +458,7 @@
   <div class="grid-bg"></div>
   <div class="badge">
     <span class="dot"></span>
-    v0.1 · <b>alpha</b> — 59 package scripts
+    v0.1 · <b>alpha</b> — 59 packages · sbpm freeze/build
   </div>
   <h1>A Linux distribution,<br>built <span>from scratch</span></h1>
   <p>A lightweight, performance-tuned distribution with a custom monolithic kernel, runit init, and the sbpm package manager.</p>
@@ -485,14 +485,14 @@
   <div class="about-grid">
     <div class="about-text">
       <p>SwellOS follows the Linux From Scratch philosophy: every component is compiled from source, optimized for performance, and hand-picked. The result is a lean, fast system with no bloat.</p>
-      <p>Now in <strong>alpha</strong> — all 9 milestones complete. The full package catalog (59 scripts across 8 categories) and the <code>swell-build</code> toolchain are ready. Bootable ISO generation is included.</p>
-      <p>The distribution is designed for users who want a modern, performant Linux experience with full control over what goes into their system.</p>
+      <p>Now in <strong>alpha</strong> — 14 milestones complete. The full package catalog (59 scripts across 8 categories) and the <code>swell-build</code> toolchain are ready. Bootable ISO generation is included. Binary package repository infrastructure and documentation book are live.</p>
+      <p>sbpm now supports <strong>freeze/unfreeze</strong> (per-package upgrade prevention), <strong>build</strong> (source compilation via swell-build), and a comprehensive <strong>docs book</strong> covering the full build pipeline from kernel to desktop.</p>
     </div>
     <div class="stats-grid">
       <div class="stat-card">
         <h3>Milestones</h3>
-        <div class="value">9/9</div>
-        <p>Kernel → LFS → ISO</p>
+        <div class="value accent">14</div>
+        <p>Kernel → LFS → Docs</p>
       </div>
       <div class="stat-card">
         <h3>Kernel</h3>
@@ -512,12 +512,12 @@
       <div class="stat-card">
         <h3>Package mgr</h3>
         <div class="value accent">sbpm</div>
-        <p>Rust, binary .swell</p>
+        <p>Freeze · build · .swell</p>
       </div>
       <div class="stat-card">
         <h3>Status</h3>
-        <div class="value">alpha</div>
-        <p>Source release</p>
+        <div class="value green">alpha</div>
+        <p>Binary repo + docs live</p>
       </div>
     </div>
   </div>
@@ -543,7 +543,7 @@
     <div class="feature-card">
       <div class="icon">📦</div>
       <h3>sbpm + swell-build</h3>
-      <p>Custom Rust toolchain: <code>sbpm</code> for binary package management, <code>swell-build</code> for source builds and ISO generation.</p>
+      <p>Custom Rust toolchain: <code>sbpm</code> for binary package management (install, freeze, build), <code>swell-build</code> for source builds and ISO generation.</p>
     </div>
     <div class="feature-card">
       <div class="icon">🔄</div>
@@ -674,7 +674,7 @@
 <section id="progress">
   <div class="accent-bar"></div>
   <h2>Build <span>progress</span></h2>
-  <p class="subtitle">All 9 milestones for v0.1 "Swell Inlet" are complete.</p>
+  <p class="subtitle">14 milestones complete for v0.1 "Swell Inlet". All 9 core milestones plus binary repo, documentation, community files, and sbpm features.</p>
 
   <div class="roadmap-item">
     <div class="status done">✓</div>
@@ -737,6 +737,41 @@
     <div class="info">
       <h4>Public alpha release — v0.1 "Swell Inlet"</h4>
       <p>All source code published on GitHub. Package catalog with 59 build scripts. Website live. Ready for community testing and contribution.</p>
+    </div>
+  </div>
+  <div class="roadmap-item">
+    <div class="status done">✓</div>
+    <div class="info">
+      <h4>Binary package repository infrastructure</h4>
+      <p><code>gh-pages</code> branch with CNAME (packages.swellos.org), CI workflow that builds packages (sed, grep, gawk, file, diffutils, findutils, patch) and deploys to Pages. <a href="https://packages.swellos.org">packages.swellos.org</a> live.</p>
+    </div>
+  </div>
+  <div class="roadmap-item">
+    <div class="status done">✓</div>
+    <div class="info">
+      <h4>Pre-built ISO downloads on website</h4>
+      <p>Download section added to website with links to GitHub Release ISO and binary package repository at packages.swellos.org.</p>
+    </div>
+  </div>
+  <div class="roadmap-item">
+    <div class="status done">✓</div>
+    <div class="info">
+      <h4>Documentation book</h4>
+      <p>LFS-style book with 8 chapters: preface, introduction, preparing, kernel, packages/core, packages/desktop, installer, appendix. Plus post-install and troubleshooting guides.</p>
+    </div>
+  </div>
+  <div class="roadmap-item">
+    <div class="status done">✓</div>
+    <div class="info">
+      <h4>Community contribution files</h4>
+      <p>Issue templates (bug report, feature request) in meta-repo and packages repo. Updated CONTRIBUTING.md and ROADMAP.md.</p>
+    </div>
+  </div>
+  <div class="roadmap-item">
+    <div class="status done">✓</div>
+    <div class="info">
+      <h4>sbpm freeze/unfreeze + build</h4>
+      <p>Per-package freeze/unfreeze with <code>-F</code>/<code>-u</code> aliases. <code>sbpm build</code> command builds packages from source via swell-build and installs the result.</p>
     </div>
   </div>
 </section>
@@ -834,10 +869,17 @@
     <span class="comment"># 5. Generate repo index</span><br>
     <span class="prompt">$</span> ./target/release/swell-build repo<br>
     <br>
-    <span class="comment"># 6. Build bootable ISO</span><br>
+    <span class="comment"># 6. Build a single package via sbpm</span><br>
+    <span class="prompt">$</span> sbpm build core/sed<br>
+    <br>
+    <span class="comment"># 7. Freeze packages to prevent upgrades</span><br>
+    <span class="prompt">$</span> sbpm -F glibc gcc      <span class="comment"># freeze specific</span><br>
+    <span class="prompt">$</span> sbpm -u glibc            <span class="comment"># unfreeze specific</span><br>
+    <br>
+    <span class="comment"># 8. Build bootable ISO</span><br>
     <span class="prompt">$</span> ./target/release/swell-build iso -K /path/to/bzImage -f<br>
     <br>
-    <span class="comment"># 7. Test in QEMU</span><br>
+    <span class="comment"># 9. Test in QEMU</span><br>
     <span class="prompt">$</span> qemu-system-x86_64 -m 2G -cdrom /usr/src/swell/repo/swellos-0.1-x86_64.iso -cpu host -enable-kvm -serial stdio
   </div>
 
@@ -856,9 +898,13 @@
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 4l6 3 6-3M2 8l6 3 6-3M2 12l6 3 6-3"/></svg>
       v0.1-alpha
     </a>
-    <a href="https://swellos.github.io/packages/repo.db">
+    <a href="https://packages.swellos.org/repo.db">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="8" cy="8" r="6"/><path d="M2 8h12M8 2a9.5 9.5 0 010 12 9.5 9.5 0 010-12z"/></svg>
       repo.db
+    </a>
+    <a href="https://github.com/SwellOS/docs">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 4v8a2 2 0 002 2h8a2 2 0 002-2V4M2 4a2 2 0 012-2h8a2 2 0 012 2M2 4h12"/></svg>
+      Documentation
     </a>
   </div>
   <p>SwellOS · Built from scratch · <a href="https://github.com/SwellOS">GitHub organization</a></p>
