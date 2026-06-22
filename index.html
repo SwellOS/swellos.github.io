@@ -145,6 +145,13 @@
   .tag.core { color: var(--accent); }
   .tag.kernel { color: var(--cyan); }
   .tag.lib { color: var(--yellow); }
+  .tag.desktop { color: #c084fc; }
+  .tag.browser { color: #f472b6; }
+  .tag.dev { color: #60a5fa; }
+  .tag.gaming { color: #fb923c; }
+  .tag.multimedia { color: #facc15; }
+  .tag.office { color: #a78bfa; }
+  .tag.network { color: #34d399; }
 
   .code-block {
     background: var(--bg3); border: 1px solid var(--border);
@@ -210,7 +217,7 @@
 </nav>
 
 <div class="hero">
-  <div class="badge">v0.1 · <b>pre-alpha</b> · 151 MB ISO</div>
+  <div class="badge">v0.1 · <b>alpha</b> — 59 package scripts</div>
   <h1>A Linux distribution,<br>built <span>from scratch</span></h1>
   <p>SwellOS is a lightweight, performance-tuned Linux distribution built from LFS/BLFS with a custom monolithic kernel, runit init, and the sbpm package manager.</p>
   <div class="buttons">
@@ -225,17 +232,17 @@
   <div class="grid-2">
     <div>
       <p style="color:var(--fg2);margin-bottom:1rem">SwellOS follows the Linux From Scratch philosophy: every component is compiled from source, optimized for performance, and hand-picked. The result is a lean, fast system with no bloat.</p>
-      <p style="color:var(--fg2);margin-bottom:1rem">Currently in <strong style="color:var(--fg)">pre-alpha</strong>, the system boots to a fully functional shell via runit service supervision. The 151 MB ISO includes the kernel, initramfs, busybox, runit, openssl, wget (HTTPS), and dhcpcd — everything needed to boot, network, and install packages.</p>
+      <p style="color:var(--fg2);margin-bottom:1rem">Now in <strong style="color:var(--fg)">alpha</strong> — all 9 milestones complete. The full package catalog (59 scripts across 8 categories) and the <code>swell-build</code> toolchain are ready. Bootable ISO generation is included.</p>
       <p style="color:var(--fg2)">The distribution is designed for users who want a modern, performant Linux experience with full control over what goes into their system.</p>
     </div>
     <div>
       <div class="cards">
-        <div class="card"><h3>ISO Size</h3><div class="value">151 MB</div><p>Bootable live ISO</p></div>
-        <div class="card"><h3>Kernel</h3><div class="value cyan">6.14</div><p>Custom monolithic, preempt tuned</p></div>
+        <div class="card"><h3>Milestones</h3><div class="value">9 / 9</div><p>Kernel → LFS → ISO</p></div>
+        <div class="card"><h3>Kernel</h3><div class="value cyan">6.x</div><p>Custom monolithic, preempt tuned</p></div>
         <div class="card"><h3>Init</h3><div class="value green">runit</div><p>Service supervision</p></div>
-        <div class="card"><h3>Rootfs</h3><div class="value">71 MB</div><p>In-memory filesystem</p></div>
-        <div class="card"><h3>Packages</h3><div class="value yellow">7</div><p>In repo.db index</p></div>
-        <div class="card"><h3>Status</h3><div class="value">pre-alpha</div><p>Networking + HTTPS</p></div>
+        <div class="card"><h3>Packages</h3><div class="value yellow">59</div><p>Scripts in 8 categories</p></div>
+        <div class="card"><h3>Package mgr</h3><div class="value">sbpm</div><p>Rust, binary .swell format</p></div>
+        <div class="card"><h3>Status</h3><div class="value">alpha</div><p>Source release</p></div>
       </div>
     </div>
   </div>
@@ -257,8 +264,8 @@
     </div>
     <div class="feature">
       <div class="icon">📦</div>
-      <h3>sbpm package manager</h3>
-      <p>Custom Rust-based package manager. Packages are `.swell` archives (tar.zst + metadata.toml). Simple JSON repo index.</p>
+      <h3>sbpm + swell-build</h3>
+      <p>Custom Rust toolchain: <code>sbpm</code> for binary package management, <code>swell-build</code> for source builds and ISO generation.</p>
     </div>
     <div class="feature">
       <div class="icon">🔄</div>
@@ -272,169 +279,168 @@
     </div>
     <div class="feature">
       <div class="icon">🌐</div>
-      <h3>GitHub Pages repos</h3>
-      <p>All source code open on GitHub under <a href="https://github.com/SwellOS">SwellOS</a>. Package repository hosted at <code style="font-size:.8rem;color:var(--accent)">swellos.github.io/packages</code>.</p>
+      <h3>59 package scripts</h3>
+      <p>Core toolchain, desktop environments (KDE Plasma 6, Hyprland, i3, WindowMaker), browsers, dev tools, gaming, multimedia, office, network.</p>
     </div>
   </div>
 </section>
 
 <section id="packages">
-  <h2>Available <span>packages</span></h2>
-  <p class="subtitle">Currently built and published .swell packages for SwellOS.</p>
+  <h2>Package <span>catalog</span></h2>
+  <p class="subtitle">59 build scripts across 8 categories, ready to compile with <code>swell-build</code>.</p>
 
+  <h3 style="font-size:1.1rem;margin-bottom:1rem;color:var(--accent)">Core (16)</h3>
   <table class="pkg-table">
     <thead>
-      <tr><th>Package</th><th>Version</th><th>Size</th><th>Type</th><th>Status</th></tr>
+      <tr><th>Package</th><th>Version</th><th>Depends</th></tr>
     </thead>
     <tbody>
-      <tr>
-        <td>busybox <small>1.36.1</small></td>
-        <td>1.36.1-1</td>
-        <td>1.5 MB</td>
-        <td><span class="tag core">core</span></td>
-        <td style="color:var(--accent)">Built</td>
-      </tr>
-      <tr>
-        <td>runit <small>2.2.0</small></td>
-        <td>2.2.0-1</td>
-        <td>1.5 MB</td>
-        <td><span class="tag core">core</span></td>
-        <td style="color:var(--accent)">Built</td>
-      </tr>
-      <tr>
-        <td>zlib <small>1.3.1</small></td>
-        <td>1.3.1-1</td>
-        <td>116 KB</td>
-        <td><span class="tag lib">lib</span></td>
-        <td style="color:var(--accent)">Built</td>
-      </tr>
-      <tr>
-        <td>linux-api-headers <small>6.14</small></td>
-        <td>6.14-1</td>
-        <td>1.7 MB</td>
-        <td><span class="tag lib">lib</span></td>
-        <td style="color:var(--accent)">Built</td>
-      </tr>
-      <tr>
-        <td>openssl <small>3.4.1</small></td>
-        <td>3.4.1-1</td>
-        <td>9.9 MB</td>
-        <td><span class="tag lib">lib</span></td>
-        <td style="color:var(--accent)">Built</td>
-      </tr>
-      <tr>
-        <td>wget <small>1.25.0</small></td>
-        <td>1.25.0-1</td>
-        <td>1.4 MB</td>
-        <td><span class="tag core">core</span></td>
-        <td style="color:var(--accent)">Built</td>
-      </tr>
-      <tr>
-        <td>dhcpcd <small>10.2.0</small></td>
-        <td>10.2.0-1</td>
-        <td>245 KB</td>
-        <td><span class="tag core">core</span></td>
-        <td style="color:var(--accent)">Built</td>
-      </tr>
-      <tr>
-        <td>linux <small>6.14</small></td>
-        <td>6.14.0-swell</td>
-        <td>13 MB</td>
-        <td><span class="tag kernel">kernel</span></td>
-        <td style="color:var(--yellow)">Raw (no .swell)</td>
-      </tr>
+      <tr><td>linux-api-headers</td><td>6.12</td><td>—</td></tr>
+      <tr><td>glibc</td><td>2.40</td><td>linux-api-headers</td></tr>
+      <tr><td>binutils</td><td>2.43.1</td><td>glibc</td></tr>
+      <tr><td>gcc</td><td>14.2.0</td><td>glibc, binutils</td></tr>
+      <tr><td>dash</td><td>0.5.12</td><td>glibc</td></tr>
+      <tr><td>coreutils</td><td>9.5</td><td>glibc</td></tr>
+      <tr><td>make</td><td>4.4.1</td><td>glibc</td></tr>
+      <tr><td>sed</td><td>4.9</td><td>glibc</td></tr>
+      <tr><td>grep</td><td>3.11</td><td>glibc</td></tr>
+      <tr><td>gawk</td><td>5.3.0</td><td>glibc</td></tr>
+      <tr><td>file</td><td>5.45</td><td>glibc</td></tr>
+      <tr><td>diffutils</td><td>3.10</td><td>glibc</td></tr>
+      <tr><td>findutils</td><td>4.10.0</td><td>glibc</td></tr>
+      <tr><td>patch</td><td>2.7.6</td><td>glibc</td></tr>
+      <tr><td>runit</td><td>2.1.2</td><td>glibc</td></tr>
+      <tr><td>sbpm</td><td>0.1.0</td><td>glibc</td></tr>
     </tbody>
   </table>
 
-  <p style="color:var(--fg2);font-size:.85rem;margin-top:1rem">Package repository URL: <code style="color:var(--accent);font-family:monospace">https://swellos.github.io/packages/repo.db</code></p>
+  <h3 style="font-size:1.1rem;margin:2rem 0 1rem;color:var(--cyan)">Desktop (16)</h3>
+  <table class="pkg-table">
+    <thead>
+      <tr><th>Package</th><th>Version</th><th>Type</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>dbus</td><td>1.15.8</td><td>Infrastructure</td></tr>
+      <tr><td>elogind</td><td>255.5</td><td>Infrastructure</td></tr>
+      <tr><td>polkit</td><td>125</td><td>Infrastructure</td></tr>
+      <tr><td>wayland</td><td>1.23.0</td><td>Infrastructure</td></tr>
+      <tr><td>wayland-protocols</td><td>1.36</td><td>Infrastructure</td></tr>
+      <tr><td>xorg-server</td><td>21.1.14</td><td>Infrastructure</td></tr>
+      <tr><td>libxcb</td><td>1.17</td><td>Infrastructure</td></tr>
+      <tr><td>pipewire</td><td>1.2.6</td><td>Infrastructure</td></tr>
+      <tr><td>wireplumber</td><td>0.5.6</td><td>Infrastructure</td></tr>
+      <tr><td>mesa</td><td>24.2.5</td><td>Infrastructure</td></tr>
+      <tr><td>libinput</td><td>1.27.1</td><td>Infrastructure</td></tr>
+      <tr><td>networkmanager</td><td>1.48.12</td><td>Infrastructure</td></tr>
+      <tr><td>plasma-desktop</td><td>6.2.0</td><td>DE (monolithic)</td></tr>
+      <tr><td>hyprland</td><td>0.46.2</td><td>WM</td></tr>
+      <tr><td>i3-wm</td><td>4.23</td><td>WM</td></tr>
+      <tr><td>windowmaker</td><td>0.96.0</td><td>WM</td></tr>
+    </tbody>
+  </table>
+
+  <h3 style="font-size:1.1rem;margin:2rem 0 1rem;color:var(--fg)">Browser · Dev · Gaming · Multimedia · Office · Network (27)</h3>
+  <table class="pkg-table">
+    <thead>
+      <tr><th>Package</th><th>Version</th><th>Category</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>firefox</td><td>135.0.1</td><td><span class="tag browser">browser</span></td></tr>
+      <tr><td>chromium</td><td>133.0.6943.53</td><td><span class="tag browser">browser</span></td></tr>
+      <tr><td>llvm</td><td>19.1.5</td><td><span class="tag dev">dev</span></td></tr>
+      <tr><td>rust</td><td>1.83.0</td><td><span class="tag dev">dev</span></td></tr>
+      <tr><td>git</td><td>2.47.1</td><td><span class="tag dev">dev</span></td></tr>
+      <tr><td>cmake</td><td>3.31.1</td><td><span class="tag dev">dev</span></td></tr>
+      <tr><td>python</td><td>3.13.1</td><td><span class="tag dev">dev</span></td></tr>
+      <tr><td>vim</td><td>9.1.0795</td><td><span class="tag dev">dev</span></td></tr>
+      <tr><td>nano</td><td>8.2</td><td><span class="tag dev">dev</span></td></tr>
+      <tr><td>steam</td><td>1.0.0.81</td><td><span class="tag gaming">gaming</span></td></tr>
+      <tr><td>wine</td><td>10.0</td><td><span class="tag gaming">gaming</span></td></tr>
+      <tr><td>dxvk</td><td>2.4.1</td><td><span class="tag gaming">gaming</span></td></tr>
+      <tr><td>mangohud</td><td>0.8.0</td><td><span class="tag gaming">gaming</span></td></tr>
+      <tr><td>ffmpeg</td><td>7.1</td><td><span class="tag multimedia">multimedia</span></td></tr>
+      <tr><td>gimp</td><td>2.10.38</td><td><span class="tag multimedia">multimedia</span></td></tr>
+      <tr><td>obs-studio</td><td>31.0.1</td><td><span class="tag multimedia">multimedia</span></td></tr>
+      <tr><td>blender</td><td>4.3.0</td><td><span class="tag multimedia">multimedia</span></td></tr>
+      <tr><td>audacity</td><td>3.7.1</td><td><span class="tag multimedia">multimedia</span></td></tr>
+      <tr><td>libreoffice</td><td>24.8.4</td><td><span class="tag office">office</span></td></tr>
+      <tr><td>thunderbird</td><td>128.5.0</td><td><span class="tag office">office</span></td></tr>
+      <tr><td>openssh</td><td>9.9p1</td><td><span class="tag network">network</span></td></tr>
+      <tr><td>dhcpcd</td><td>10.1.0</td><td><span class="tag network">network</span></td></tr>
+      <tr><td>wpa_supplicant</td><td>2.11</td><td><span class="tag network">network</span></td></tr>
+      <tr><td>iwd</td><td>3.2</td><td><span class="tag network">network</span></td></tr>
+      <tr><td>ell</td><td>0.72</td><td><span class="tag network">network</span></td></tr>
+    </tbody>
+  </table>
+
+  <p style="color:var(--fg2);font-size:.85rem;margin-top:1rem">All packages are build scripts in the <a href="https://github.com/SwellOS/packages">packages</a> repo. Build with <code style="color:var(--accent)">swell-build pkg &lt;name&gt;</code> or <code style="color:var(--accent)">swell-build world -j 4</code>.</p>
 </section>
 
 <section id="progress">
   <h2>Build <span>progress</span></h2>
-  <p class="subtitle">Current state of the SwellOS build pipeline. 10 of 12 milestones complete.</p>
+  <p class="subtitle">All 9 milestones for v0.1 "Swell Inlet" are complete.</p>
 
   <div class="roadmap-item">
     <div class="status done">✓</div>
     <div class="info">
-      <h4>sbpm package manager</h4>
-      <p>Built from Rust source with patched REPO_URL pointing to swellos.github.io/packages. 4.6 MB ELF binary, depends on libssl + libcrypto.</p>
+      <h4>Swell kernel — config, build scripts, docs</h4>
+      <p>Monolithic .config with all common drivers built-in (NVMe, SATA, virtio, e1000, USB, ext4, btrfs, vfat). PREEMPT, NO_HZ_FULL, ZSTD compression. Build scripts and CI workflow.</p>
     </div>
   </div>
   <div class="roadmap-item">
     <div class="status done">✓</div>
     <div class="info">
-      <h4>zlib 1.3.1</h4>
-      <p>First package built. Shared library (libz.so.1.3.1), static library (libz.a), headers, and pkg-config file (116 KB .swell).</p>
+      <h4>runit init — package build script</h4>
+      <p>Service supervision: stage 1 (startup), stage 2 (runsvdir), stage 3 (shutdown). Packaged as .swell.</p>
     </div>
   </div>
   <div class="roadmap-item">
     <div class="status done">✓</div>
     <div class="info">
-      <h4>busybox 1.36.1</h4>
-      <p>Static multi-call binary (2.5 MB). Defconfig + ash shell enabled. 300+ applet symlinks. Packaged as .swell (1.5 MB).</p>
+      <h4>sbpm package manager — full Rust implementation</h4>
+      <p>Binary-first package manager. Install (-S), remove (-R), upgrade (-U), search (-Ss), freeze/unfreeze. .swell archives (tar.zst + metadata.toml). JSON repo index.</p>
     </div>
   </div>
   <div class="roadmap-item">
     <div class="status done">✓</div>
     <div class="info">
-      <h4>runit 2.2.0</h4>
-      <p>All 13 binaries built and statically linked. K&amp;R C code modernized for GCC. Service supervision working with auto-login shell. Packaged as .swell (1.5 MB).</p>
+      <h4>LFS baseline — self-hosting toolchain + base CLI</h4>
+      <p>16 core packages: linux-api-headers → glibc → binutils → gcc → dash, coreutils, make, sed, grep, gawk, file, diffutils, findutils, patch, runit, sbpm.</p>
     </div>
   </div>
   <div class="roadmap-item">
     <div class="status done">✓</div>
     <div class="info">
-      <h4>Linux 6.14 kernel</h4>
-      <p>Custom monolithic config: CONFIG_PREEMPT, CONFIG_NO_HZ_FULL, CONFIG_SCHED_MC, CONFIG_KERNEL_ZSTD. All common drivers built-in. 13 MB bzImage.</p>
+      <h4>Desktop infrastructure + environments</h4>
+      <p>12 desktop infrastructure packages (dbus, elogind, polkit, wayland, xorg, pipewire, mesa, etc.) + 4 DE/WM scripts (KDE Plasma 6, Hyprland, i3, WindowMaker) + metapackages.</p>
     </div>
   </div>
   <div class="roadmap-item">
     <div class="status done">✓</div>
     <div class="info">
-      <h4>Bootable ISO</h4>
-      <p>151 MB ISO with GRUB (BIOS hybrid). Initramfs with runit, busybox, openssl, wget, dhcpcd. Auto-login root shell on ttyS0. Tested in QEMU.</p>
+      <h4>Browser, dev, gaming, multimedia, office, network</h4>
+      <p>27 additional package scripts: firefox, chromium, llvm, rust, git, cmake, python, vim, nano, steam, wine, dxvk, mangohud, ffmpeg, gimp, obs-studio, blender, audacity, libreoffice, thunderbird, openssh, dhcpcd, wpa_supplicant, iwd, ell.</p>
     </div>
   </div>
   <div class="roadmap-item">
     <div class="status done">✓</div>
     <div class="info">
-      <h4>linux-api-headers 6.14</h4>
-      <p>Kernel userspace headers (1,008 files) installed and packaged as .swell (1.7 MB). Required for building other packages.</p>
+      <h4>swell-install — TUI installer</h4>
+      <p>Rust-based TUI installer: partition management, metapackage selection (KDE, GNOME, Xfce, Hyprland, i3, WindowMaker, dev, browser, gaming, multimedia, office), full install flow.</p>
     </div>
   </div>
   <div class="roadmap-item">
     <div class="status done">✓</div>
     <div class="info">
-      <h4>openssl 3.4.1</h4>
-      <p>Cryptography library built, installed, and packaged as .swell (9.9 MB). 1,915 files: libssl, libcrypto, headers, binaries, man pages.</p>
+      <h4>swell-build — source build system + ISO generation</h4>
+      <p>Full Rust build system: <code>swell-build pkg</code> (single), <code>world -j N</code> (parallel with dep ordering), <code>repo</code> (repo.db), <code>info</code>, <code>list</code>, <code>clean</code>, <code>iso</code> (bootable live ISO with GRUB+UEFI, initramfs, busybox, squashfs).</p>
     </div>
   </div>
   <div class="roadmap-item">
     <div class="status done">✓</div>
     <div class="info">
-      <h4>wget 1.25.0 + dhcpcd 10.2.0</h4>
-      <p>wget built with HTTPS (OpenSSL) support (1.4 MB .swell). dhcpcd for automatic networking (245 KB .swell). Both added to live ISO.</p>
-    </div>
-  </div>
-  <div class="roadmap-item">
-    <div class="status confirmed">✓</div>
-    <div class="info">
-      <h4>Website live at swellos.github.io</h4>
-      <p>Main site pushed and live. Package repository ready at swellos.github.io/packages.</p>
-    </div>
-  </div>
-  <div class="roadmap-item">
-    <div class="status pending">◷</div>
-    <div class="info">
-      <h4>swell-installer integration</h4>
-      <p>Bundle the Rust-based installer into the live ISO. Enable persistent installation to disk from the live environment.</p>
-    </div>
-  </div>
-  <div class="roadmap-item">
-    <div class="status pending">◷</div>
-    <div class="info">
-      <h4>Additional packages</h4>
-      <p>Build file, make, gcc, sudo, and other packages for a usable developer environment.</p>
+      <h4>Public alpha release — v0.1 "Swell Inlet"</h4>
+      <p>All source code published on GitHub. Package catalog with 59 build scripts. Website live. Ready for community testing and contribution.</p>
     </div>
   </div>
 </section>
@@ -449,57 +455,71 @@
     </thead>
     <tbody>
       <tr>
+        <td><a href="https://github.com/SwellOS/swellos">swellos</a></td>
+        <td>Meta-repo — submodules for all components</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td><a href="https://github.com/SwellOS/kernel">kernel</a></td>
+        <td>Custom Linux kernel fork with SwellOS config</td>
+        <td>C + Shell</td>
+      </tr>
+      <tr>
         <td><a href="https://github.com/SwellOS/sbpm">sbpm</a></td>
         <td>Package manager — download, install, remove .swell packages</td>
         <td>Rust</td>
       </tr>
       <tr>
-        <td><a href="https://github.com/SwellOS/kernel">kernel</a></td>
-        <td>Custom Linux kernel fork with SwellOS config</td>
-        <td>C</td>
-      </tr>
-      <tr>
-        <td><a href="https://github.com/SwellOS/packages">packages</a></td>
-        <td>Package build scripts and published .swell archives</td>
-        <td>Shell + JSON</td>
-      </tr>
-      <tr>
         <td><a href="https://github.com/SwellOS/swell-build">swell-build</a></td>
-        <td>Build system for compiling and packaging software</td>
+        <td>Build system — source builds, ISO generation, repo management</td>
         <td>Rust</td>
       </tr>
       <tr>
         <td><a href="https://github.com/SwellOS/swell-installer">swell-installer</a></td>
-        <td>Graphical/TUI installer for persistent installation</td>
+        <td>TUI installer — partition, select packages, build, install</td>
         <td>Rust</td>
+      </tr>
+      <tr>
+        <td><a href="https://github.com/SwellOS/packages">packages</a></td>
+        <td>59 package build scripts across 8 categories</td>
+        <td>Shell</td>
+      </tr>
+      <tr>
+        <td><a href="https://github.com/SwellOS/docs">docs</a></td>
+        <td>LFS-style documentation book</td>
+        <td>Markdown</td>
+      </tr>
+      <tr>
+        <td><a href="https://github.com/SwellOS/website">website</a></td>
+        <td>SwellOS website source</td>
+        <td>HTML</td>
       </tr>
     </tbody>
   </table>
 
   <div style="margin-top:2rem;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.5rem">
-    <h3 style="font-size:1rem;margin-bottom:.75rem;color:var(--accent)">Directory structure</h3>
+    <h3 style="font-size:1rem;margin-bottom:.75rem;color:var(--accent)">Build workspace layout</h3>
     <div class="code-block" style="margin:0">
-<span class="comment"># Build workspace layout</span><br>
-<span class="prompt">swellos/</span><br>
-├── build-scripts/        <span class="comment"># build.conf, build-pkg.sh</span><br>
-├── build/<br>
-│   ├── rootfs/           <span class="comment"># Target root filesystem (71 MB)</span><br />
-│   ├── pkgs/             <span class="comment"># .swell package archives (7 packages)</span><br>
-│   ├── repo/             <span class="comment"># repo.db JSON index</span><br>
-│   ├── sources/          <span class="comment"># Downloaded source tarballs</span><br>
-│   ├── rootfs.cpio.zst   <span class="comment"># Compressed initramfs (19 MB)</span><br>
-│   ├── swellos.iso       <span class="comment"># Bootable ISO (151 MB)</span><br>
-│   ├── build-busybox/<br>
-│   ├── build-runit/<br>
-│   ├── build-zlib/<br>
-│   ├── build-openssl/<br>
-│   ├── build-wget/<br>
-│   └── build-dhcpcd/<br>
-├── kernel/               <span class="comment"># Kernel repo clone</span><br>
-├── packages/             <span class="comment"># Packages repo clone</span><br>
-├── sbpm/                 <span class="comment"># sbpm repo clone</span><br>
-├── swell-build/          <span class="comment"># swell-build repo clone</span><br>
-└── swell-installer/      <span class="comment"># swell-installer repo clone</span><br>
+<span class="comment"># /usr/src/swell/ — standard build workspace</span><br>
+<span class="prompt">/usr/src/swell/</span><br>
+├── packages/              <span class="comment"># Package definitions (git submodule)</span><br>
+│   ├── core/              <span class="comment"># 16 core packages</span><br>
+│   ├── desktop/           <span class="comment"># 16 desktop infrastructure + DEs</span><br>
+│   ├── browser/           <span class="comment"># Firefox, Chromium</span><br>
+│   ├── dev/               <span class="comment"># 7 dev tools</span><br>
+│   ├── gaming/            <span class="comment"># Steam, Wine, DXVK, MangoHud</span><br>
+│   ├── multimedia/        <span class="comment"># 5 multimedia apps</span><br>
+│   ├── office/            <span class="comment"># LibreOffice, Thunderbird</span><br>
+│   ├── network/           <span class="comment"># 5 network packages</span><br>
+│   └── meta/              <span class="comment"># Metapackages (KDE, dev, gaming, etc.)</span><br>
+├── sources/               <span class="comment"># Downloaded source tarballs</span><br>
+├── build/                 <span class="comment"># Per-package build directories</span><br>
+├── dest/                  <span class="comment"># Per-package DESTDIR roots</span><br>
+├── repo/                  <span class="comment"># Output: repo.db + .swell packages</span><br>
+│   ├── packages/          <span class="comment"># .swell archives</span><br>
+│   └── repo.db            <span class="comment"># JSON package index</span><br>
+├── iso-work/              <span class="comment"># ISO staging</span><br>
+└── swellos-0.1-x86_64.iso <span class="comment"># Bootable ISO</span><br>
     </div>
   </div>
 </section>
@@ -509,35 +529,40 @@
   <p class="subtitle">SwellOS is built entirely from source. Here's how the build pipeline works.</p>
 
   <div class="code-block">
-    <span class="comment"># 1. Build sbpm (package manager)</span><br>
+    <span class="comment"># 1. Clone the meta-repo</span><br>
+    <span class="prompt">$</span> git clone https://github.com/SwellOS/swellos.git<br>
+    <span class="prompt">$</span> cd swellos && git submodule update --init --recursive<br>
+    <br>
+    <span class="comment"># 2. Build sbpm (package manager)</span><br>
     <span class="prompt">$</span> cd sbpm && cargo build --release<br>
     <br>
-    <span class="comment"># 2. Set up build configuration</span><br>
-    <span class="prompt">$</span> cat build-scripts/build.conf<br>
-    <span class="comment">REPO_DIR=/tmp/swellos/build/repo</span><br>
-    <span class="comment">ROOTFS_DIR=/tmp/swellos/build/rootfs</span><br>
-    <span class="comment">REPO_URL_BASE="https://swellos.github.io/packages"</span><br>
+    <span class="comment"># 3. Build the kernel</span><br>
+    <span class="prompt">$</span> cd kernel && ./scripts/build.sh<br>
     <br>
-    <span class="comment"># 3. Build a package from source</span><br>
-    <span class="prompt">$</span> ./build-pkg.sh zlib 1.3.1 \<br>
-    &nbsp;&nbsp;https://zlib.net/zlib-1.3.1.tar.gz \<br>
-    &nbsp;&nbsp;9a93...<span class="comment"># sha256</span><br>
+    <span class="comment"># 4. Build all packages</span><br>
+    <span class="prompt">$</span> cd ../swell-build && cargo build --release<br>
+    <span class="prompt">$</span> ./target/release/swell-build world -j $(nproc)<br>
     <br>
-    <span class="comment"># 4. Create bootable ISO</span><br>
-    <span class="prompt">$</span> grub-mkrescue -o swellos.iso rootfs/<br>
+    <span class="comment"># 5. Generate repo index</span><br>
+    <span class="prompt">$</span> ./target/release/swell-build repo<br>
     <br>
-    <span class="comment"># 5. Test in QEMU</span><br>
-    <span class="prompt">$</span> qemu-system-x86_64 -m 512M \<br>
-    &nbsp;&nbsp;-cdrom swellos.iso -cpu max -serial stdio
+    <span class="comment"># 6. Build bootable ISO</span><br>
+    <span class="prompt">$</span> ./target/release/swell-build iso \<br>
+    &nbsp;&nbsp;-K /path/to/bzImage -f<br>
+    <br>
+    <span class="comment"># 7. Test in QEMU</span><br>
+    <span class="prompt">$</span> qemu-system-x86_64 -m 2G \<br>
+    &nbsp;&nbsp;-cdrom /usr/src/swell/repo/swellos-0.1-x86_64.iso \<br>
+    &nbsp;&nbsp;-cpu host -enable-kvm -serial stdio
   </div>
 
   <div style="margin-top:2rem;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:1.25rem">
-    <p style="color:var(--fg2);font-size:.9rem">The kernel requires <code style="color:var(--accent)">-cpu max</code> in QEMU because busybox is compiled with AVX instructions unsupported by QEMU's default CPU model. On real hardware this is not an issue.</p>
+    <p style="color:var(--fg2);font-size:.9rem">All 59 packages are build scripts in the <a href="https://github.com/SwellOS/packages">packages</a> repo. Dependencies are resolved automatically by <code>swell-build world</code>. The <code>iso</code> subcommand requires <code>mksquashfs</code>, <code>xorriso</code>, <code>grub-mkrescue</code>, and a pre-built <code>busybox</code> binary on the host.</p>
   </div>
 </section>
 
 <footer>
-  <p>SwellOS · Built from scratch · <a href="https://github.com/SwellOS">GitHub organization</a> · <a href="https://swellos.github.io/packages/repo.db">Package repository</a></p>
+  <p>SwellOS · Built from scratch · <a href="https://github.com/SwellOS">GitHub organization</a> · <a href="https://github.com/SwellOS/swellos/releases/tag/v0.1-alpha">v0.1-alpha release</a></p>
 </footer>
 
 </body>
